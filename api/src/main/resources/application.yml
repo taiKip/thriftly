@@ -24,3 +24,18 @@ server:
 security:
   jwt:
     secret-key: ${SECRET_KEY}
+logging:
+  level:
+    root: DEBUG
+  pattern:
+    console: "{\"timestamp\":\"%d{yyyy-MM-dd HH:mm:ss.SSS}\",\"level\":\"%level\",\"thread\":\"%t\",\"logger\":\"%logger{36}\",\"message\":\"%msg\"}%n"
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-access-key:  ${AWS_SECRET_ACCESS_KEY}
+    region:
+      static: eu-north-1
+    stack: false
+    s3:
+      bucket: ${AWS_BUCKET_NAME} #thrifty-bucket
