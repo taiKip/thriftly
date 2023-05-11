@@ -1,14 +1,16 @@
 package com.example.api.product;
 
+import com.example.api.category.Category;
 import com.example.api.entity.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import com.example.api.orderitems.OrderItem;
+import com.example.api.review.Review;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Data
@@ -22,9 +24,16 @@ public class Product extends BaseEntity {
     private String name;
     private double price;
     private String description;
-
     private String imageUrl;
-    private int inventory = 1;
+    private boolean available;
+    private int stock = 1;
+    @OneToMany(mappedBy = "product")
+    private List<Review> reviews;
 
+    @OneToMany(mappedBy = "product")
+    private List<OrderItem> orderItems;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
 }

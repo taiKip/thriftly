@@ -1,12 +1,16 @@
-package com.example.api.baseAddress;
+package com.example.api.baseaddress;
 
+import com.example.api.address.Address;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Data
@@ -20,4 +24,6 @@ public class BaseAddress {
     private String street;
     private String city;
     private String zipcode;
+    @OneToMany(mappedBy = "baseAddress")
+    private List<Address> addresses;
 }
