@@ -25,7 +25,7 @@ public class Product extends BaseEntity {
     private double price;
     private String description;
     private String imageUrl;
-    private boolean available;
+    private boolean available = true;
     private int stock = 1;
     @OneToMany(mappedBy = "product")
     private List<Review> reviews;

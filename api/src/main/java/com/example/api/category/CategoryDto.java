@@ -1,4 +1,16 @@
 package com.example.api.category;
 
-public record CategoryDto(String name) {
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class CategoryDto{
+   private String name;
+   private Long parentId =null;
+    private int height =0;
 }
