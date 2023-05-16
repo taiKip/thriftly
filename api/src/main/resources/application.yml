@@ -17,13 +17,15 @@ spring:
         format_sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+  security:
+    jwt:
+      secret-key: ${SECRET_KEY}
 server:
   error:
     include-binding-errors: always
     include-message: always
-security:
-  jwt:
-    secret-key: ${SECRET_KEY}
+
+
 logging:
   level:
     root: DEBUG

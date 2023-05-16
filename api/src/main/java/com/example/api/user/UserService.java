@@ -1,9 +1,28 @@
 package com.example.api.user;
 
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-@Service
-public interface UserService {
+import java.util.Optional;
 
-    User findUserByEmail(String userEmail);
+@Service
+@RequiredArgsConstructor
+@Transactional
+public class UserService implements UserDetailsService{
+    private final UserRepository userRepository;
+
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<User> user = userRepository.findByEmail(username);
+        if(user.isEmpty()){
+            throw new UsernameNotFoundException("User not found");
+        }
+
+        return user.get();
+    }
 }

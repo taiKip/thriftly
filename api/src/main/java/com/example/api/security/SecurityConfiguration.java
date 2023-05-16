@@ -1,9 +1,11 @@
 package com.example.api.security;
 
-import com.example.api.user.UserService;
+import com.example.api.user.Role;
+import com.example.api.user.Role.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -17,7 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfiguration {
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
-    private final UserService userService;
+
 
     /***
      * @desc At startup spring will look for a bean of
@@ -32,16 +34,22 @@ public class SecurityConfiguration {
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/v1/**")
+                .requestMatchers("/api/v1/auth/**","/api/v1/login/**","api/v1/**")
                 .permitAll()
+
+                .requestMatchers(HttpMethod.GET,"/api/v1/demo/**").authenticated()
+                .requestMatchers(HttpMethod.POST,"/api/v1/demo").hasRole(Role.ADMIN.name())
+
                 .anyRequest()
                 .authenticated()
                 .and()
+//                .oauth2Login()
+//                .and()
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS) //Spring creates a new session for every request
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class); //call jwtFilter before calling Username... filter
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
 
 

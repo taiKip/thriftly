@@ -14,7 +14,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
-    private final Logger LOGGER  = LoggerFactory.getLogger(LoggerFactory.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(LoggerFactory.class);
 
     /***
      *
@@ -28,37 +28,60 @@ public class CategoryServiceImpl implements CategoryService {
          * @desc Check if duplicate category exists in the same hierarchy level
          * @action throw an error if it exists.
          */
-        if(categoryDb.isPresent()){
-            LOGGER.info("CATEGORY SERVICE IMPL :: category  present!!!");
-        }else{
-            LOGGER.info("CATEGORY SERVICE IMPL :: category does not exist");
+        if (categoryDb.isPresent() && categoryDto.getParentId() == null) {
+            LOGGER.info("CATEGORYSERVICEIMPL :: category  present!!!");
+            if (categoryDb.get().getHeight() == categoryDto.getHeight()) {
+                throw new CategoryExistsException("Category exists");
+            }
         }
-        if ( categoryDb.isPresent() && categoryDb.get().getHeight() == categoryDto.getHeight()) {
-
-            throw new CategoryExistsException("Category Exists");
-        }
-
-        LOGGER.info(String.format("CATEGORY SERVICE IMPL :: parentId: %d  ,height: %d ,name: %s",categoryDto.getParentId(),categoryDto.getHeight(),categoryDto.getName()));
+        /**
+         * @desc find  parent category using parent id;
+         */
         Optional<Category> parentCategory = null;
-        int height =categoryDto.getHeight() ;
-        if (categoryDto.getParentId()!= null) {
+        if (categoryDto.getParentId() != null) {
             parentCategory = categoryRepository.findById(categoryDto.getParentId());
             if (parentCategory.isEmpty()) {
                 throw new CategoryNotFoundException("Parent category not found");
             }
         }
 
+
         Category newCategory = new Category();
         newCategory.setName(categoryDto.getName());
-        if(Objects.nonNull(parentCategory)){
-            height+=1;
-            newCategory.setParentCategory(parentCategory.get());
+        if (categoryDto.getParentId() == null) {
+            List<Category> categoryRepositoryAll = categoryRepository.findAll();
+            if (!categoryRepositoryAll.isEmpty()) {
+                List<Category> children = (List<Category>) categoryRepository.findAllChildren(categoryRepositoryAll.get(0).getId());
+                LOGGER.info("CHILDREN::" + children);
+                categoryExists(children, categoryDto.getName());
+                newCategory.setParentCategory(categoryRepositoryAll.get(0));
+                newCategory.setHeight(categoryRepositoryAll.get(0).getHeight() + 1);
+
+                LOGGER.info("CATEGORY appended as child of only existing category in db");
+            } else {
+                newCategory.setParentCategory(null);
+                newCategory.setHeight(0);
+            }
         }
-        newCategory.setHeight(height);
+
+        if (Objects.nonNull(parentCategory)) {
+            List<Category> children = (List<Category>) categoryRepository.findAllChildren(parentCategory.get().getId());
+            categoryExists(children, categoryDto.getName());
+            newCategory.setParentCategory(parentCategory.get());
+            newCategory.setHeight(parentCategory.get().getHeight() + 1);
+        }
 
 
         return categoryRepository.save(newCategory);
 
+    }
+
+    private void categoryExists(List<Category> categories, String name) throws CategoryExistsException {
+        for (Category child : categories) {
+            if (Objects.equals(child.getName().toLowerCase(), name.toLowerCase())) {
+                throw new CategoryExistsException("A category with the same name in the hierarchy exists");
+            }
+        }
     }
 
     @Override
@@ -75,4 +98,6 @@ public class CategoryServiceImpl implements CategoryService {
     public String deleteCategoryById(Long categoryId) {
         return null;
     }
+
+
 }

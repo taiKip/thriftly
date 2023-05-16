@@ -1,5 +1,6 @@
 package com.example.api.product;
 
+import com.example.api.category.CategoryNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class ProductController {
      * @return
      */
     @PostMapping
-    public ResponseEntity<Product> createProduct(@RequestBody ProductDto productDto) {
+    public ResponseEntity<Product> createProduct(@RequestBody ProductDto productDto) throws CategoryNotFoundException {
         return ResponseEntity.ok(productService.createProduct(productDto));
     }
 

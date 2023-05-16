@@ -2,7 +2,7 @@ package com.example.api.order;
 
 import com.example.api.address.Address;
 import com.example.api.entity.BaseEntity;
-import com.example.api.orderitems.OrderItem;
+import com.example.api.orderitem.OrderItem;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

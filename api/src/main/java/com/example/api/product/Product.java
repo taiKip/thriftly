@@ -2,7 +2,7 @@ package com.example.api.product;
 
 import com.example.api.category.Category;
 import com.example.api.entity.BaseEntity;
-import com.example.api.orderitems.OrderItem;
+import com.example.api.orderitem.OrderItem;
 import com.example.api.review.Review;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

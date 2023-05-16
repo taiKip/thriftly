@@ -21,13 +21,11 @@ public class Category {
     @GeneratedValue
     private Long id;
     private String name;
-    private int height; //height in  hierarchy to help prevent duplication during creation
+    private int height;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = true,name = "parent_id")
     @JsonIgnore
     private Category parentCategory;
-    @OneToMany(mappedBy = "parentCategory")
-    private Set<Category> subCategories;
     @OneToMany(mappedBy = "category" ,cascade = CascadeType.ALL)
     private Set<Product> products;
 }

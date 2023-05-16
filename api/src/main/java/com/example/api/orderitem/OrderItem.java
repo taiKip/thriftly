@@ -1,4 +1,4 @@
-package com.example.api.orderitems;
+package com.example.api.orderitem;
 
 import com.example.api.order.Order;
 import com.example.api.product.Product;
