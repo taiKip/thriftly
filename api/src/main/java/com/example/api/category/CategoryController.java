@@ -12,11 +12,12 @@ import java.util.List;
 public class CategoryController {
     private final CategoryService categoryService;
 
-    /***
-     * @desc create category
-     * @acces Private - Admin
-     * @param category
-     * @return created category
+    /**
+     *
+     * @param categoryDto
+     * @return
+     * @throws CategoryExistsException
+     * @throws CategoryNotFoundException
      */
     @PostMapping
     public ResponseEntity<Category> createCategory(@RequestBody CategoryDto categoryDto) throws CategoryExistsException, CategoryNotFoundException {

@@ -21,6 +21,7 @@ public class Category {
     @GeneratedValue
     private Long id;
     private String name;
+    private String image;
     private int height;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = true,name = "parent_id")

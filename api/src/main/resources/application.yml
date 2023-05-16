@@ -10,7 +10,7 @@ spring:
       max-request-size: 100MB
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
@@ -18,6 +18,8 @@ spring:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   security:
+    password:
+      regex-pattern: "^(?=.*\\d)(?=.*[a-z])(?=.*[!@#$%^&*])(?=.*[A-Z])(?=.*[a-zA-Z]).{6,}$"
     jwt:
       secret-key: ${SECRET_KEY}
 server:

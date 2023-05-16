@@ -11,9 +11,9 @@ import java.util.List;
 public interface ProductService {
     Product createProduct(ProductDto productDto) throws CategoryNotFoundException;
 
-    Product updateProduct(ProductDto productDto);
+    Product updateProduct(UpdateProductDto productDto,Long productId) throws ProductNotFoundException;
 
-    Product findProductById(Long productId);
+    Product findProductById(Long productId) throws ProductNotFoundException;
 
     String deleteProductById(Long productId);
 

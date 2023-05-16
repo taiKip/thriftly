@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -26,6 +27,8 @@ public class ProductServiceImpl implements ProductService{
                 .name(productDto.name())
                 .stock(productDto.stock())
                 .price(productDto.price())
+                .image(productDto.imageUrl())
+                .category(categoryDb.get())
                 .description(productDto.description())
                 .build();
 
@@ -33,12 +36,35 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public Product updateProduct(ProductDto productDto) {
-        return null;
+    public Product updateProduct(UpdateProductDto productDto,Long productId) throws ProductNotFoundException {
+        Optional<Product> productDb = productRepository.findById(productId);
+        if(productDb.isEmpty()){
+            throw new ProductNotFoundException("Product does not exist");
+        }
+        if(Objects.nonNull(productDto.name()) && !"".equalsIgnoreCase(productDto.name())){
+            productDb.get().setName(productDto.name());
+        }
+        if(Objects.nonNull(productDto.description()) && !"".equalsIgnoreCase(productDto.description())){
+            productDb.get().setDescription(productDto.description());
+        }
+        if(productDto.price()>0){
+            productDb.get().setPrice(productDto.price());
+        }
+        if(Objects.nonNull(productDto.imageUrl()) && !"".equalsIgnoreCase(productDto.imageUrl())){
+            productDb.get().setImage(productDto.imageUrl());
+        }
+        if(productDto.stock()>0){
+            productDb.get().setStock(productDto.stock());
+        }
+        return productRepository.save(productDb.get());
     }
 
     @Override
-    public Product findProductById(Long productId) {
+    public Product findProductById(Long productId) throws ProductNotFoundException {
+        Optional<Product> productDb  = productRepository.findById(productId);
+        if(productDb.isEmpty()){
+            throw new ProductNotFoundException(String.format("Product with id %d not found",productId));
+        }
         return null;
     }
 

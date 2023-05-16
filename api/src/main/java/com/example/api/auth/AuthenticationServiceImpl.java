@@ -3,6 +3,7 @@ package com.example.api.auth;
 import com.example.api.security.JwtService;
 import com.example.api.user.Role;
 import com.example.api.user.User;
+import com.example.api.user.UserNameExists;
 import com.example.api.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,6 +11,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import javax.xml.validation.Validator;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +31,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      * @return token
      */
     @Override
-    public AuthenticationResponseDto register(RegisterRequestDto request) {
+    public AuthenticationResponseDto register(RegisterRequestDto request) throws UserNameExists {
+        Optional<User> userDb = userRepository.findByEmailIgnoreCase(request.email());
+if(userDb.isPresent()){
+    throw new UserNameExists("Email already taken");
+}
         User user = User.builder()
                 .email(request.email())
                 .firstname(request.firstname())
@@ -44,7 +52,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public AuthenticationResponseDto authenticate(AuthenticationRequestDto request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.email(), request.password()));
         User user = userRepository
-                .findByEmail(
+                .findByEmailIgnoreCase(
                         request.email())
                 .orElseThrow(
                         () -> new UsernameNotFoundException("User not found"));

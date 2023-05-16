@@ -1,5 +1,8 @@
 package com.example.api.user;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,7 +26,10 @@ public class User implements UserDetails {
     private Long id;
     private String firstname;
     private String lastname;
+
+    @Column(unique = true)
     private String email;
+
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;

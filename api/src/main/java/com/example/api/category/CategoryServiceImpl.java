@@ -48,6 +48,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         Category newCategory = new Category();
         newCategory.setName(categoryDto.getName());
+        newCategory.setImage(categoryDto.getImage());
         if (categoryDto.getParentId() == null) {
             List<Category> categoryRepositoryAll = categoryRepository.findAll();
             if (!categoryRepositoryAll.isEmpty()) {
@@ -61,6 +62,7 @@ public class CategoryServiceImpl implements CategoryService {
             } else {
                 newCategory.setParentCategory(null);
                 newCategory.setHeight(0);
+
             }
         }
 
@@ -69,6 +71,7 @@ public class CategoryServiceImpl implements CategoryService {
             categoryExists(children, categoryDto.getName());
             newCategory.setParentCategory(parentCategory.get());
             newCategory.setHeight(parentCategory.get().getHeight() + 1);
+
         }
 
 
@@ -86,7 +89,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<Category> fetchCategories() {
-        return null;
+
+        return categoryRepository.findAll();
     }
 
     @Override

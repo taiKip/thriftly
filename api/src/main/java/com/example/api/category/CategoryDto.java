@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CategoryDto{
    private String name;
+   private String image;
    private Long parentId =null;
     private int height =0;
 }
