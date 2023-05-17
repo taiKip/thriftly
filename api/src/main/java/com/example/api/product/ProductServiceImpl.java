@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -82,8 +83,9 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public Map searchProductsByName(String query, Integer pageSize, Integer pageNumber) {
-        Pageable pageable =  PageRequest.of(0,2);
+    public Map searchProductsByName(String query, int pageSize, int pageNumber) {
+        Pageable pageable=  PageRequest.of(pageSize,pageNumber);
+
 
         Page<Product> products=  productRepository.findProductByNameContainingIgnoreCase(query,pageable);
 
@@ -97,7 +99,18 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public List<Product> fetchProducts() {
-        return null;
+    public Map fetchProducts(  int pageNumber,int pageSize, String sortDir, String sortBy) {
+        Pageable pageable=  PageRequest.of(pageNumber,pageSize,Sort.by(sortBy).ascending());
+
+
+        Page<Product> products=  productRepository.findAll(pageable);
+
+        if(products.hasContent()){
+            TitlePageDto<Product> titlePageDto =new TitlePageDto<>("products",products);
+            return pageResponseDtoMapper.apply(titlePageDto);
+        }
+        else {
+            return  new HashMap<>();
+        }
     }
 }

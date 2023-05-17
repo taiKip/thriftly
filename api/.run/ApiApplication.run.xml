@@ -1,0 +1,29 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="ApiApplication" type="Application" factoryName="Application" nameIsGenerated="true">
+    <envs>
+      <env name="AWS_ACCESS_KEY" value="AKIAQODPVBA42BHGZNHG" />
+      <env name="AWS_SECRET_ACCESS_KEY" value="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" />
+      <env name="DB_PASSWORD" value="postgres" />
+      <env name="DB_URL" value="jdbc:postgresql://localhost:5432/thriftydb" />
+      <env name="DB_USERNAME" value="postgres" />
+      <env name="SECRET_KEY" value="&quot;78214125432A462D4A614E645267556B58703273357638792F423F4528472B4B&quot;" />
+      <env name="AWS_BUCKET_NAME" value="thrifty-bucket" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="com.example.api.ApiApplication" />
+    <module name="api" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="com.example.api.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <extension name="software.aws.toolkits.jetbrains.core.execution.JavaAwsConnectionExtension">
+      <option name="credential" />
+      <option name="region" />
+      <option name="useCurrentConnection" value="false" />
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

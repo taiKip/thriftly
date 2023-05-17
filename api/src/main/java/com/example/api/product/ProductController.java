@@ -1,12 +1,11 @@
 package com.example.api.product;
 
 import com.example.api.category.CategoryNotFoundException;
+import com.example.api.utils.AppConstants;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -22,18 +21,30 @@ public class ProductController {
      * @return
      */
     @PostMapping
-    public ResponseEntity<Product> createProduct(@RequestBody ProductDto productDto) throws CategoryNotFoundException {
+    public ResponseEntity<Product> createProduct(
+            @RequestBody ProductDto productDto) throws CategoryNotFoundException {
         return ResponseEntity.ok(productService.createProduct(productDto));
     }
 
     /***
-     * @desc fetch list of products
-     * @access Public
-     * @return
+     *
+     * @param pageNo
+     * @param pageSize
+     * @param sortDir
+     * @return Paginated list of products
      */
     @GetMapping
-    public ResponseEntity<List<Product>> fetchProducts() {
-        return ResponseEntity.ok(productService.fetchProducts());
+    public ResponseEntity<Map<String, Object>> fetchProducts(
+            @RequestParam(value = "sortBy", defaultValue
+                    = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+            @RequestParam(value = "pageNo", defaultValue
+                    = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue
+                    = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+            @RequestParam(value = "sortDir", defaultValue
+                    = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir
+    ) {
+        return ResponseEntity.ok(productService.fetchProducts(pageNo, pageSize, sortDir, sortBy));
     }
 
     /***
@@ -43,8 +54,10 @@ public class ProductController {
      * @return
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@RequestBody UpdateProductDto productDto,@PathVariable("id") Long productId) throws ProductNotFoundException {
-        return ResponseEntity.ok(productService.updateProduct(productDto,productId));
+    public ResponseEntity<Product> updateProduct(
+            @RequestBody UpdateProductDto productDto,
+            @PathVariable("id") Long productId) throws ProductNotFoundException {
+        return ResponseEntity.ok(productService.updateProduct(productDto, productId));
     }
 
     /***
@@ -70,16 +83,19 @@ public class ProductController {
     }
 
     /***
-     * @desc search products by name
-     * @access Public
+     *
      * @param query
-     * @return list of products.
+     * @param pageNo
+     * @param pageSize
+     * @return
      */
     @GetMapping("/search")
-    public ResponseEntity<Map<String,Object>> searchProductsByName(@RequestParam("name") String query,
-                                                             @RequestParam(defaultValue = "0")Integer pageNo,
-                                                             @RequestParam(defaultValue = "1") Integer pageSize) {
-        return ResponseEntity.ok(productService.searchProductsByName(query,pageNo,pageSize));
+    public ResponseEntity<Map<String, Object>> searchProductsByName(@RequestParam("name") String query,
+                                                                    @RequestParam(value = "pageNo", defaultValue
+                                                                            = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+                                                                    @RequestParam(value = "pageSize", defaultValue
+                                                                            = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize) {
+        return ResponseEntity.ok(productService.searchProductsByName(query, pageNo, pageSize));
     }
 
 }

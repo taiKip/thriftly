@@ -1,6 +1,7 @@
 package com.example.api.product;
 
 import com.example.api.category.CategoryNotFoundException;
+import com.example.api.dto.TitlePageDto;
 import com.example.api.entity.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.Query;
@@ -20,7 +21,7 @@ public interface ProductService {
 
     String deleteProductById(Long productId);
     @Query(value = "SELECT t FROM Tutorial t WHERE LOWER(t.name) LIKE LOWER(CONCAT('%', ?1,'%'))",nativeQuery = true)
-    Map<String,Object> searchProductsByName(String query, Integer pageSize, Integer pageNo);
+    Map<String, Object> searchProductsByName(String query, int pageSize, int pageNo);
 
-    List<Product> fetchProducts();
+    Map<String,Object> fetchProducts(int pageNumber, int pageSize, String sortDir,String sortBy);
 }
