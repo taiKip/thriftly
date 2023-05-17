@@ -6,6 +6,7 @@ import com.example.api.product.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -23,18 +24,37 @@ public class ReviewServiceImpl implements ReviewService{
         Review newReview = Review
                 .builder()
                 .rating(reviewDto.rating())
+                .product(productDb.get())
                 .comment(reviewDto.comment())
                 .build();
-        return null;
+
+         reviewRepository.save(newReview);
+         return "Review added";
     }
 
     @Override
-    public Review updateReview(ReviewDto reviewDto, Long reviewId) {
-        return null;
+    public Review updateReview(ReviewDto reviewDto, Long reviewId) throws ReviewNotFoundException {
+        Optional<Review> reviewDb = reviewRepository.findById(reviewId);
+       if(reviewDb.isEmpty()){
+           throw new ReviewNotFoundException("Review not found");
+       }
+       if(Objects.nonNull(reviewDto.comment()) && !reviewDto.comment().isEmpty()){
+           reviewDb.get().setComment( reviewDto.comment());
+       }
+        if(reviewDto.rating()>0 && reviewDto.rating()<5){
+            reviewDb.get().setComment( reviewDto.comment());
+        }
+
+        return reviewRepository.save(reviewDb.get());
     }
 
     @Override
-    public String deleteReview(Long reviewId) {
-        return null;
+    public String deleteReview(Long reviewId) throws ReviewNotFoundException {
+        Optional<Review> reviewDb = reviewRepository.findById(reviewId);
+        if(reviewDb.isEmpty()){
+            throw new ReviewNotFoundException("Review does not exist");
+        }
+        reviewRepository.deleteById(reviewId);
+        return "Review deleted";
     }
 }

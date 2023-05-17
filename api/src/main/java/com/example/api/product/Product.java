@@ -6,11 +6,11 @@ import com.example.api.orderitem.OrderItem;
 import com.example.api.review.Review;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -28,15 +28,21 @@ public class Product extends BaseEntity {
     private String image;
     private boolean available = true;
     private int stock = 1;
-    @OneToMany(mappedBy = "product")
-    @JsonIgnore
+    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Review> reviews;
+
 
     @OneToMany(mappedBy = "product")
     @JsonIgnore
     private List<OrderItem> orderItems;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
+    @JsonIgnore
     private Category category;
+
+    public boolean isAvailable() {
+        return true;
+    }
 }

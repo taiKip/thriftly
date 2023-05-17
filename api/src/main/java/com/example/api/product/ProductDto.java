@@ -12,4 +12,5 @@ public record ProductDto(@NotNull @NotEmpty String name,
                          @NotNull @NotEmpty double price,
                          @NotNull @NotEmpty Long categoryId,
                          @NotNull @NotEmpty String imageUrl) {
+
 }

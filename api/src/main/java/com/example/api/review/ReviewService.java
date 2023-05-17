@@ -11,7 +11,7 @@ public interface ReviewService {
     String addReview(ReviewDto requestDto) throws ProductNotFoundException;
 
 
-    Review updateReview(ReviewDto reviewDto, Long reviewId);
+    Review updateReview(ReviewDto reviewDto, Long reviewId) throws ReviewNotFoundException;
 
-    String deleteReview(Long reviewId);
+    String deleteReview(Long reviewId) throws ReviewNotFoundException;
 }

@@ -2,10 +2,12 @@ package com.example.api.product;
 
 import com.example.api.category.CategoryNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/v1/products")
@@ -74,8 +76,10 @@ public class ProductController {
      * @return list of products.
      */
     @GetMapping("/search")
-    public ResponseEntity<List<Product>> searchProductsByName(@RequestParam("query") String query) {
-        return ResponseEntity.ok(productService.searchProductsByName(query));
+    public ResponseEntity<Map<String,Object>> searchProductsByName(@RequestParam("name") String query,
+                                                             @RequestParam(defaultValue = "0")Integer pageNo,
+                                                             @RequestParam(defaultValue = "1") Integer pageSize) {
+        return ResponseEntity.ok(productService.searchProductsByName(query,pageNo,pageSize));
     }
 
 }

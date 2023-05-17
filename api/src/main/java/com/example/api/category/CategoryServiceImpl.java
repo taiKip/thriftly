@@ -23,14 +23,14 @@ public class CategoryServiceImpl implements CategoryService {
      */
     @Override
     public Category createCategory(CategoryDto categoryDto) throws CategoryExistsException, CategoryNotFoundException {
-        Optional<Category> categoryDb = categoryRepository.findByNameIgnoreCase(categoryDto.getName());
+        Optional<Category> categoryDb = categoryRepository.findByNameIgnoreCase(categoryDto.name());
         /**
          * @desc Check if duplicate category exists in the same hierarchy level
          * @action throw an error if it exists.
          */
-        if (categoryDb.isPresent() && categoryDto.getParentId() == null) {
+        if (categoryDb.isPresent() && categoryDto.parentId() == null) {
             LOGGER.info("CATEGORYSERVICEIMPL :: category  present!!!");
-            if (categoryDb.get().getHeight() == categoryDto.getHeight()) {
+            if (categoryDb.get().getHeight() == categoryDto.height()) {
                 throw new CategoryExistsException("Category exists");
             }
         }
@@ -38,8 +38,8 @@ public class CategoryServiceImpl implements CategoryService {
          * @desc find  parent category using parent id;
          */
         Optional<Category> parentCategory = null;
-        if (categoryDto.getParentId() != null) {
-            parentCategory = categoryRepository.findById(categoryDto.getParentId());
+        if (categoryDto.parentId() != null) {
+            parentCategory = categoryRepository.findById(categoryDto.parentId());
             if (parentCategory.isEmpty()) {
                 throw new CategoryNotFoundException("Parent category not found");
             }
@@ -47,14 +47,14 @@ public class CategoryServiceImpl implements CategoryService {
 
 
         Category newCategory = new Category();
-        newCategory.setName(categoryDto.getName());
-        newCategory.setImage(categoryDto.getImage());
-        if (categoryDto.getParentId() == null) {
+        newCategory.setName(categoryDto.name());
+        newCategory.setImage(categoryDto.image());
+        if (categoryDto.parentId() == null) {
             List<Category> categoryRepositoryAll = categoryRepository.findAll();
             if (!categoryRepositoryAll.isEmpty()) {
                 List<Category> children = (List<Category>) categoryRepository.findAllChildren(categoryRepositoryAll.get(0).getId());
                 LOGGER.info("CHILDREN::" + children);
-                categoryExists(children, categoryDto.getName());
+                categoryExists(children, categoryDto.name());
                 newCategory.setParentCategory(categoryRepositoryAll.get(0));
                 newCategory.setHeight(categoryRepositoryAll.get(0).getHeight() + 1);
 
@@ -68,7 +68,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         if (Objects.nonNull(parentCategory)) {
             List<Category> children = (List<Category>) categoryRepository.findAllChildren(parentCategory.get().getId());
-            categoryExists(children, categoryDto.getName());
+            categoryExists(children, categoryDto.name());
             newCategory.setParentCategory(parentCategory.get());
             newCategory.setHeight(parentCategory.get().getHeight() + 1);
 

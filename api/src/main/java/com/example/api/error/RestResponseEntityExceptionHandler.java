@@ -3,6 +3,7 @@ package com.example.api.error;
 import com.example.api.category.CategoryExistsException;
 import com.example.api.category.CategoryNotFoundException;
 import com.example.api.product.ProductNotFoundException;
+import com.example.api.review.ReviewNotFoundException;
 import com.example.api.user.UserNameExists;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,16 +43,18 @@ public class RestResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorMessage);
     }
 
-    @ExceptionHandler({
-            MethodArgumentNotValidException.class
-    })
-    public ResponseEntity< Map<String, String>> handleValidationException(MethodArgumentNotValidException exception) {
-        Map<String, String> errorMap = new HashMap<>();
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, ErrorMessage>> handleValidationException(MethodArgumentNotValidException exception) {
+        Map<String, ErrorMessage> errorMap = new HashMap<>();
         exception.getBindingResult().getFieldErrors().forEach(error -> {
-            errorMap.put(error.getField(), error.getDefaultMessage());
+            errorMap.put(error.getField(), new ErrorMessage(HttpStatus.BAD_REQUEST,error.getDefaultMessage()));
         });
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMap);
     }
 
-
+@ExceptionHandler(ReviewNotFoundException.class)
+    public ResponseEntity<ErrorMessage> reviewNotFoundException(ReviewNotFoundException reviewNotFoundException){
+        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.NOT_FOUND,reviewNotFoundException.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+}
 }

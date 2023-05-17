@@ -18,12 +18,12 @@ public class ReviewController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Review> updateReview(@RequestBody @Valid ReviewDto reviewDto, @PathVariable("id") Long reviewId) {
+    public ResponseEntity<Review> updateReview(@RequestBody @Valid ReviewDto reviewDto, @PathVariable("id") Long reviewId) throws ReviewNotFoundException {
         return ResponseEntity.ok(reviewService.updateReview(reviewDto, reviewId));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteReview(@PathVariable("id") Long reviewId) {
+    public ResponseEntity<String> deleteReview(@PathVariable("id") Long reviewId) throws ReviewNotFoundException {
         return ResponseEntity.ok(reviewService.deleteReview(reviewId));
     }
 }
