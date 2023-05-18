@@ -1,10 +1,14 @@
 package com.example.api.product;
 
+import com.example.api.aws.AwsS3Service;
 import com.example.api.category.CategoryNotFoundException;
+import com.example.api.error.DuplicateException;
 import com.example.api.utils.AppConstants;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 
@@ -13,6 +17,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
+    private AwsS3Service awsS3Service;
 
     /***
      * @desc Create product
@@ -22,16 +27,18 @@ public class ProductController {
      */
     @PostMapping
     public ResponseEntity<Product> createProduct(
-            @RequestBody ProductDto productDto) throws CategoryNotFoundException {
+            @RequestBody ProductDto productDto) throws CategoryNotFoundException,
+            DuplicateException {
         return ResponseEntity.ok(productService.createProduct(productDto));
     }
 
     /***
      *
+     * @param sortBy
      * @param pageNo
      * @param pageSize
      * @param sortDir
-     * @return Paginated list of products
+     * @return
      */
     @GetMapping
     public ResponseEntity<Map<String, Object>> fetchProducts(
@@ -67,7 +74,8 @@ public class ProductController {
      * @return Product
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Product> findProductById(@PathVariable("id") Long productId) throws ProductNotFoundException {
+    public ResponseEntity<Product> findProductById(
+            @PathVariable("id") Long productId) throws ProductNotFoundException {
         return ResponseEntity.ok(productService.findProductById(productId));
     }
 
@@ -78,7 +86,8 @@ public class ProductController {
      * @return
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteProductById(@PathVariable("id") Long productId) {
+    public ResponseEntity<String> deleteProductById(
+            @PathVariable("id") Long productId) {
         return ResponseEntity.ok(productService.deleteProductById(productId));
     }
 
@@ -90,11 +99,12 @@ public class ProductController {
      * @return
      */
     @GetMapping("/search")
-    public ResponseEntity<Map<String, Object>> searchProductsByName(@RequestParam("name") String query,
-                                                                    @RequestParam(value = "pageNo", defaultValue
-                                                                            = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
-                                                                    @RequestParam(value = "pageSize", defaultValue
-                                                                            = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize) {
+    public ResponseEntity<Map<String, Object>> searchProductsByName(
+            @RequestParam(value = "name") String query,
+            @RequestParam(value = "pageNo", defaultValue
+                    = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue
+                    = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize) {
         return ResponseEntity.ok(productService.searchProductsByName(query, pageNo, pageSize));
     }
 

@@ -3,12 +3,11 @@ package com.example.api.category;
 import com.example.api.product.Product;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -18,15 +17,20 @@ import java.util.Set;
 @AllArgsConstructor
 public class Category {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
     private String image;
     private int height;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = true,name = "parent_id")
     @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
     private Category parentCategory;
-    @OneToMany(mappedBy = "category" ,cascade = CascadeType.ALL)
-    private Set<Product> products;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name="category_product",joinColumns = {
+            @JoinColumn(name="category_id", referencedColumnName = "id")}
+            ,inverseJoinColumns = {@JoinColumn(name="product_id",referencedColumnName = "id")})
+    private List<Product> products =new ArrayList<>();
+
 }

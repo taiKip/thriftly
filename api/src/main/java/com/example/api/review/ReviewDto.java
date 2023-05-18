@@ -7,5 +7,5 @@ import jakarta.validation.constraints.NotNull;
 
 public record ReviewDto(String comment,
                         @NotNull @Min(1) @Max(5) int rating,
-                        @NotNull  Long productId) {
+                        @NotNull(message = "Product id must not be null")  Long productId) {
 }

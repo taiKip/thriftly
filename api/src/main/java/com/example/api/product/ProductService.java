@@ -1,19 +1,16 @@
 package com.example.api.product;
 
 import com.example.api.category.CategoryNotFoundException;
-import com.example.api.dto.TitlePageDto;
-import com.example.api.entity.Response;
-import org.springframework.data.domain.Page;
+import com.example.api.error.DuplicateException;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Map;
 
 @Service
 
 public interface ProductService {
-    Product createProduct(ProductDto productDto) throws CategoryNotFoundException;
+    Product createProduct(ProductDto productDto) throws CategoryNotFoundException, DuplicateException;
 
     Product updateProduct(UpdateProductDto productDto,Long productId) throws ProductNotFoundException;
 

@@ -57,4 +57,9 @@ public class RestResponseEntityExceptionHandler {
         ErrorMessage errorMessage = new ErrorMessage(HttpStatus.NOT_FOUND,reviewNotFoundException.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
 }
+@ExceptionHandler(DuplicateException.class)
+    public ResponseEntity<ErrorMessage> duplicateRecordExistsException(DuplicateException duplicateException){
+        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.CONFLICT,duplicateException.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorMessage);
+}
 }

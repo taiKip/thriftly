@@ -11,7 +11,9 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -28,19 +30,16 @@ public class Product extends BaseEntity {
     private String image;
     private boolean available = true;
     private int stock = 1;
-    @OneToMany(mappedBy = "product",cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews;
 
 
     @OneToMany(mappedBy = "product")
     @JsonIgnore
-    private List<OrderItem> orderItems;
-
-    @ToString.Exclude
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "category_id")
+    private List<OrderItem> orderItems =new ArrayList<>();
     @JsonIgnore
-    private Category category;
+    @ManyToMany(mappedBy = "products")
+    private List<Category> categories = new ArrayList<>();
 
     public boolean isAvailable() {
         return true;

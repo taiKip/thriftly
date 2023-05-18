@@ -1,9 +1,11 @@
 package com.example.api.product;
 
-import com.example.api.category.Category;
+import com.example.api.aws.AwsS3Service;
 import com.example.api.category.CategoryNotFoundException;
 import com.example.api.category.CategoryRepository;
 import com.example.api.dto.TitlePageDto;
+import com.example.api.error.DuplicateException;
+import com.example.api.utils.AppConstants;
 import com.example.api.utils.PageResponseDtoMapper;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -22,19 +24,26 @@ public class ProductServiceImpl implements ProductService{
     private final ProductRepository productRepository;
     private final PageResponseDtoMapper pageResponseDtoMapper;
 
+
     @Override
-    public Product createProduct(ProductDto productDto) throws CategoryNotFoundException {
-        Optional<Category> categoryDb = categoryRepository.findById(productDto.categoryId());
-        if(categoryDb.isEmpty()){
-            throw new CategoryNotFoundException("Category not found");
+    @Transactional
+    public Product createProduct(ProductDto productDto) throws CategoryNotFoundException, DuplicateException {
+        String imageUrl = AppConstants.NO_IMAGE_PLACE_HOLDER;
+        if(!productDto.imageUrl().isEmpty()){
+           imageUrl= productDto.imageUrl();
+        }
+Optional<Product> duplicate = productRepository.findProductByNameIgnoreCase(productDto.name());
+        if(duplicate.isPresent()){
+            if(duplicate.get().getImage().equalsIgnoreCase(productDto.imageUrl())){
+                throw new DuplicateException("Duplicate product");
+            }
         }
         Product newProduct = Product
                 .builder()
                 .name(productDto.name())
                 .stock(productDto.stock())
                 .price(productDto.price())
-                .image(productDto.imageUrl())
-                .category(categoryDb.get())
+                .image(imageUrl)
                 .description(productDto.description())
                 .build();
 
