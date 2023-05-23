@@ -21,4 +21,6 @@ public interface ProductService {
     Map<String, Object> searchProductsByName(String query, int pageSize, int pageNo);
 
     Map<String,Object> fetchProducts(int pageNumber, int pageSize, String sortDir,String sortBy);
+
+    String addProductToCategory(Long productId, String categoryIds) throws CategoryNotFoundException, ProductNotFoundException;
 }

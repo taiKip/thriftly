@@ -62,4 +62,9 @@ public class RestResponseEntityExceptionHandler {
         ErrorMessage errorMessage = new ErrorMessage(HttpStatus.CONFLICT,duplicateException.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorMessage);
 }
+    @ExceptionHandler(InvalidArgument.class)
+    public ResponseEntity<ErrorMessage> InvalidArgumentException(InvalidArgument invalidArgument){
+        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST,invalidArgument.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+    }
 }

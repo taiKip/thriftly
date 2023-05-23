@@ -1,7 +1,7 @@
 package com.example.api.address;
 
 import com.example.api.baseaddress.BaseAddress;
-import com.example.api.order.Order;
+import com.example.api.shoporder.ShopOrder;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,5 +24,5 @@ public class Address {
     @JoinColumn(name = "base_address_id")
     private BaseAddress baseAddress;
     @OneToMany(mappedBy = "address")
-    private List<Order> orders;
+    private List<ShopOrder> orders;
 }

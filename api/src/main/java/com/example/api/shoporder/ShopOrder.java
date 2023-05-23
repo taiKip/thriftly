@@ -1,4 +1,4 @@
-package com.example.api.order;
+package com.example.api.shoporder;
 
 import com.example.api.address.Address;
 import com.example.api.entity.BaseEntity;
@@ -17,11 +17,13 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "orders")
-public class Order extends BaseEntity {
+public class ShopOrder extends BaseEntity {
     @Id
     @GeneratedValue
     private Long id;
     private double total;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id")
     private Address address;

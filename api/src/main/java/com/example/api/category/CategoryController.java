@@ -1,9 +1,8 @@
 package com.example.api.category;
 
 import com.example.api.error.DuplicateException;
-import com.example.api.product.Product;
+import com.example.api.error.InvalidArgument;
 import com.example.api.product.ProductNotFoundException;
-import com.example.api.utils.AppConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +25,7 @@ public class CategoryController {
     @PostMapping
     public ResponseEntity<Category> createCategory(
             @RequestBody CategoryDto categoryDto)
-            throws CategoryExistsException, CategoryNotFoundException {
+            throws CategoryExistsException, CategoryNotFoundException, InvalidArgument {
         return ResponseEntity.ok(categoryService.createCategory(categoryDto));
     }
 
@@ -53,16 +52,8 @@ public class CategoryController {
      * @return List of categories
      */
     @GetMapping
-    public ResponseEntity<Map<String, Object>> fetchCategories(
-            @RequestParam(value = "name", defaultValue
-                    = AppConstants.DEFAULT_CATEGORY_NAME) String name,
-            @RequestParam(value = "level", defaultValue
-                    = AppConstants.DEFAULT_CATEGORY_HEIGHT) int level,
-            @RequestParam(value = "pageSize", defaultValue
-                    = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
-            @RequestParam(value = "parentId", required = false) Long parentId
-    ) {
-        return ResponseEntity.ok(categoryService.fetchCategories(name, level,pageSize, parentId));
+    public ResponseEntity<Map<String, List<Category>>> fetchCategories() {
+        return ResponseEntity.ok(categoryService.fetchCategories());
     }
 
     /***

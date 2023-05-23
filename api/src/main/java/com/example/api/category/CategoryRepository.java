@@ -24,5 +24,7 @@ public interface CategoryRepository extends JpaRepository<Category,Long> {
     Page<Category> findCategoryByQuery(String  query,Pageable pageable);
     @Query(value = "SELECT * FROM CATEGORY u WHERE u.parent_id IS NULL",nativeQuery = true)
     Optional<Category> findHeadCategory();
+@Query(value = "SELECT * FROM CATEGORY u WHERE u.id IN ?1",nativeQuery = true)
+List<Category> findAncestry(List<Long> categoryIds);
 
 }

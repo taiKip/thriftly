@@ -2,6 +2,7 @@ package com.example.api.category;
 
 import com.example.api.product.Product;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,15 +23,17 @@ public class Category {
     private String name;
     private String image;
     private int height;
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
-    private Category parentCategory;
+    private Category parent;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name="category_product",joinColumns = {
-            @JoinColumn(name="category_id", referencedColumnName = "id")}
-            ,inverseJoinColumns = {@JoinColumn(name="product_id",referencedColumnName = "id")})
+    @OneToMany(mappedBy = "parent",cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JsonManagedReference
+    private List<Category> subCategories;
+   @ManyToMany(mappedBy = "category",cascade = CascadeType.ALL)
+   @JsonIgnore
     private List<Product> products =new ArrayList<>();
 
 }

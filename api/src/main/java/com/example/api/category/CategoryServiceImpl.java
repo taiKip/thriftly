@@ -1,18 +1,19 @@
 package com.example.api.category;
 
-import com.example.api.dto.TitlePageDto;
 import com.example.api.error.DuplicateException;
+import com.example.api.error.InvalidArgument;
 import com.example.api.product.Product;
 import com.example.api.product.ProductNotFoundException;
 import com.example.api.product.ProductRepository;
 import com.example.api.utils.PageResponseDtoMapper;
+import com.google.gson.Gson;
+import jakarta.transaction.Transactional;
+import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.*;
 
@@ -31,7 +32,7 @@ public class CategoryServiceImpl implements CategoryService {
      * @return
      */
     @Override
-    public Category createCategory(CategoryDto categoryDto) throws CategoryExistsException, CategoryNotFoundException {
+    public Category createCategory(CategoryDto categoryDto) throws CategoryExistsException, CategoryNotFoundException, InvalidArgument {
         Optional<Category> categoryDb = categoryRepository.findByNameIgnoreCase(categoryDto.name());
         /**
          * @desc Check if duplicate category exists in the same hierarchy level
@@ -61,16 +62,9 @@ public class CategoryServiceImpl implements CategoryService {
         if (categoryDto.parentId() == null) {
             Optional<Category> headCategory = categoryRepository.findHeadCategory();
             if (headCategory.isPresent()) {
-                List<Category> children =
-                        categoryRepository.findAllChildren(headCategory.get().getId());
-                LOGGER.info("CHILDREN::" + children);
-                categoryExists(children, categoryDto.name());
-                newCategory.setParentCategory(headCategory.get());
-                newCategory.setHeight(headCategory.get().getHeight() + 1);
-
-                LOGGER.info("CATEGORY appended as child of only existing category in db");
+                throw new InvalidArgument("Parent id is missing");
             } else {
-                newCategory.setParentCategory(null);
+                newCategory.setParent(null);
                 newCategory.setHeight(0);
 
             }
@@ -79,7 +73,7 @@ public class CategoryServiceImpl implements CategoryService {
         if (Objects.nonNull(parentCategory)) {
             List<Category> children = categoryRepository.findAllChildren(parentCategory.get().getId());
             categoryExists(children, categoryDto.name());
-            newCategory.setParentCategory(parentCategory.get());
+            newCategory.setParent(parentCategory.get());
             newCategory.setHeight(parentCategory.get().getHeight() + 1);
 
         }
@@ -107,23 +101,33 @@ public class CategoryServiceImpl implements CategoryService {
      * results get paginated.
      */
     @Override
-    public Map fetchCategories(String name, int level, int pageSize, Long parentId) {
-        Pageable pageable = PageRequest.of(level, pageSize);
+    public Map<String, List<Category>> fetchCategories() {
+        Map<String, List<Category>> response = new HashMap<>();
+        var categories = categoryRepository.findAll();
+        List<Category> categoryList = new ArrayList<>();
 
-        Page<Category> categories = categoryRepository.findCategoryByQuery(name.toLowerCase(), pageable);
-        if (parentId != null) {
-            categories = categoryRepository.findSubCategories(parentId, pageable);
-        }
-        if (categories.hasContent()) {
-            TitlePageDto<Category> titlePageDto = new TitlePageDto<>("categories", categories);
-            return pageResponseDtoMapper.apply(titlePageDto);
-        } else {
-            return new HashMap<>();
-        }
+        if (!categories.isEmpty()) {
 
+            for (Category c : categories) {
+                if (c.getParent() == null) {
+                    categoryList.add(c);
+                }
+            }
+        }
+        response.put("categories:", categoryList);
+        return response;
 
     }
 
+    /**
+     * @todo operation too slow, needs further optimization: current:200ms
+     * @param categoryId
+     * @param productId
+     * @return
+     * @throws CategoryNotFoundException
+     * @throws ProductNotFoundException
+     * @throws DuplicateException
+     */
     @Override
     public String addProductToCategory(Long categoryId, Long productId) throws CategoryNotFoundException,
             ProductNotFoundException, DuplicateException {
@@ -151,11 +155,11 @@ public class CategoryServiceImpl implements CategoryService {
         categoryRepository.save(foundCategory);
 
 
-
         return String.format("%s added to %s", foundProduct.getName(), foundCategory.getName());
     }
 
     @Override
+    @Transactional
     public Category fetchCategoryById(Long categoryId) throws CategoryNotFoundException {
         Optional<Category> categoryDb = categoryRepository.findById(categoryId);
         if (categoryDb.isEmpty()) {
@@ -172,6 +176,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public String deleteCategoryById(Long categoryId) {
+
         return null;
     }
 

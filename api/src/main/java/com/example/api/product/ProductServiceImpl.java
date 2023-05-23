@@ -1,6 +1,7 @@
 package com.example.api.product;
 
 import com.example.api.aws.AwsS3Service;
+import com.example.api.category.Category;
 import com.example.api.category.CategoryNotFoundException;
 import com.example.api.category.CategoryRepository;
 import com.example.api.dto.TitlePageDto;
@@ -41,8 +42,6 @@ Optional<Product> duplicate = productRepository.findProductByNameIgnoreCase(prod
         Product newProduct = Product
                 .builder()
                 .name(productDto.name())
-                .stock(productDto.stock())
-                .price(productDto.price())
                 .image(imageUrl)
                 .description(productDto.description())
                 .build();
@@ -62,15 +61,11 @@ Optional<Product> duplicate = productRepository.findProductByNameIgnoreCase(prod
         if(Objects.nonNull(productDto.description()) && !productDto.name().isEmpty()){
             productDb.get().setDescription(productDto.description());
         }
-        if(productDto.price()>0){
-            productDb.get().setPrice(productDto.price());
-        }
+
         if(Objects.nonNull(productDto.imageUrl()) && !productDto.name().isEmpty()){
             productDb.get().setImage(productDto.imageUrl());
         }
-        if(productDto.stock()>0){
-            productDb.get().setStock(productDto.stock());
-        }
+
         return productRepository.save(productDb.get());
     }
 
@@ -121,5 +116,47 @@ Optional<Product> duplicate = productRepository.findProductByNameIgnoreCase(prod
         else {
             return  new HashMap<>();
         }
+    }
+
+    /**
+     *
+     * @param productId
+     * @param categoryIds - gets multiple category ids from client separated by comas ie. 1,4,5
+     * @return
+     * @throws CategoryNotFoundException
+     * @throws ProductNotFoundException
+     */
+    @Override
+    public String addProductToCategory(Long productId, String categoryIds) throws CategoryNotFoundException, ProductNotFoundException {
+
+
+        String[] idArray = categoryIds.split(",");
+        List<Long> idList= new ArrayList<>();
+
+if(idArray.length>1){
+    for(int i=0;i< idArray.length;i++){
+        idList.add( Long.parseLong(idArray[i]));
+    }
+}
+
+        List<Category> categories = categoryRepository.findAncestry(idList);
+        Optional<Product> productDb = productRepository.findById(productId);
+
+        if (categories==null || categories.isEmpty()) { //check if last category exists.
+            throw new CategoryNotFoundException("Category does not exist");
+        }
+        if (productDb.isEmpty()) {
+            throw new ProductNotFoundException("Product not found");
+        } else {
+            productDb.get();
+        }
+
+
+        Product foundProduct = productDb.get();
+        foundProduct.setCategory(categories);
+
+        //add remaining categories
+        productRepository.save(foundProduct);
+        return String.format("%s added to categories",foundProduct.getName()) ;
     }
 }

@@ -107,5 +107,10 @@ public class ProductController {
                     = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize) {
         return ResponseEntity.ok(productService.searchProductsByName(query, pageNo, pageSize));
     }
+@PostMapping("/{productId}/categories")
+    public ResponseEntity<String> addProductToCategory(@PathVariable("productId") Long productId,
+                                                       @RequestBody String  categoryIds) throws CategoryNotFoundException, ProductNotFoundException {
+        return ResponseEntity.ok(productService.addProductToCategory(productId,categoryIds));
+}
 
 }
