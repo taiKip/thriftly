@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public record CategoryDto(
         @NotNull @NotEmpty String name,
+        @NotNull @NotEmpty String description,
         String image,
         Long parentId,
         int height

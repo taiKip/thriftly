@@ -1,10 +1,14 @@
 package com.example.api.error;
 
+import com.example.api.address.AddressNotFoundException;
 import com.example.api.category.CategoryExistsException;
 import com.example.api.category.CategoryNotFoundException;
+import com.example.api.orderstatus.OrderStatusNotFoundException;
+import com.example.api.product.OutOfStockException;
 import com.example.api.product.ProductNotFoundException;
 import com.example.api.review.ReviewNotFoundException;
 import com.example.api.user.UserNameExists;
+import com.example.api.user.UserRoleNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -66,5 +70,31 @@ public class RestResponseEntityExceptionHandler {
     public ResponseEntity<ErrorMessage> InvalidArgumentException(InvalidArgument invalidArgument){
         ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST,invalidArgument.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+    }
+
+    @ExceptionHandler(DataNotSaved.class)
+    public ResponseEntity<ErrorMessage> dataNotSaved(DataNotSaved dataNotSaved){
+        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR,dataNotSaved.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
+    }
+    @ExceptionHandler(OrderStatusNotFoundException.class)
+    public ResponseEntity<ErrorMessage> orderStatusNotFound(OrderStatusNotFoundException orderStatusNotFoundException){
+        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR, orderStatusNotFoundException.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
+    }
+    @ExceptionHandler(OutOfStockException.class)
+    public ResponseEntity<ErrorMessage> outOfStock(OutOfStockException outOfStockException){
+        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR, outOfStockException.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
+    }
+    @ExceptionHandler(AddressNotFoundException.class)
+    public ResponseEntity<ErrorMessage> addressNotFoundException(AddressNotFoundException addressNotFoundException){
+        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.NOT_FOUND,addressNotFoundException.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+    }
+    @ExceptionHandler(UserRoleNotFoundException.class)
+    public ResponseEntity<ErrorMessage> userRoleNotFoundException(UserRoleNotFoundException userRoleNotFoundException){
+        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.NOT_FOUND,userRoleNotFoundException.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
     }
 }

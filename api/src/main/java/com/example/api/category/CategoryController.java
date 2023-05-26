@@ -5,6 +5,7 @@ import com.example.api.error.InvalidArgument;
 import com.example.api.product.ProductNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,21 +39,13 @@ public class CategoryController {
      * @throws ProductNotFoundException
      * @throws DuplicateException
      */
-    @PostMapping("/{categoryId}/products/{productId}")
-    public ResponseEntity<String> addProductToCategory(
-            @PathVariable("categoryId") Long categoryId,
-            @PathVariable("productId") Long productId
-    ) throws CategoryNotFoundException, ProductNotFoundException, DuplicateException {
-        return ResponseEntity.ok(categoryService.addProductToCategory(categoryId, productId));
-    }
-
     /***
      * @desc Fetch categories
      * @access public
      * @return List of categories
      */
     @GetMapping
-    public ResponseEntity<Map<String, List<Category>>> fetchCategories() {
+    public ResponseEntity <List<Category>> fetchCategories() {
         return ResponseEntity.ok(categoryService.fetchCategories());
     }
 
@@ -63,6 +56,7 @@ public class CategoryController {
      * @return category
      */
     @PutMapping("/{categoryId}")
+    @PreAuthorize("hasAuthority('management:create')")
     public ResponseEntity<Category> updateCategory(@PathVariable("categoryId") Long categoryId) {
         return ResponseEntity.ok(categoryService.updateCategory());
     }
@@ -74,6 +68,7 @@ public class CategoryController {
      * @access private - Admin
      */
     @DeleteMapping("/{categoryId}")
+    @PreAuthorize("hasAuthority('management:create')")
     public ResponseEntity<String> deleteCategory(@PathVariable("categoryId") Long categoryId) {
         return ResponseEntity.ok(categoryService.deleteCategoryById(categoryId));
     }

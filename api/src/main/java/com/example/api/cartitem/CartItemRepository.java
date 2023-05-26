@@ -1,8 +1,8 @@
-package com.example.api.shoporder;
+package com.example.api.cartitem;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ShopOrderRepository extends JpaRepository<ShopOrder,Long> {
+public interface CartItemRepository extends JpaRepository<CartItem,Long> {
 }

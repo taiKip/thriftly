@@ -17,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -43,6 +44,8 @@ Optional<Product> duplicate = productRepository.findProductByNameIgnoreCase(prod
                 .builder()
                 .name(productDto.name())
                 .image(imageUrl)
+                .stock(productDto.stock())
+                .price(productDto.price())
                 .description(productDto.description())
                 .build();
 
@@ -57,6 +60,9 @@ Optional<Product> duplicate = productRepository.findProductByNameIgnoreCase(prod
         }
         if(Objects.nonNull(productDto.name()) && !productDto.name().isEmpty()){
             productDb.get().setName(productDto.name());
+        }
+        if(productDto.price()>0){
+            productDb.get().setPrice(productDto.price());
         }
         if(Objects.nonNull(productDto.description()) && !productDto.name().isEmpty()){
             productDb.get().setDescription(productDto.description());
@@ -87,27 +93,11 @@ Optional<Product> duplicate = productRepository.findProductByNameIgnoreCase(prod
     }
 
     @Override
-    public Map searchProductsByName(String query, int pageSize, int pageNumber) {
+    public Map<String,Object> searchProductsByName(String query, int pageSize, int pageNumber) {
         Pageable pageable=  PageRequest.of(pageSize,pageNumber);
 
 
-        Page<Product> products=  productRepository.findProductByNameContainingIgnoreCase(query,pageable);
-
-        if(products.hasContent()){
-            TitlePageDto<Product> titlePageDto =new TitlePageDto<>("products",products);
-            return pageResponseDtoMapper.apply(titlePageDto);
-        }
-        else {
-            return  new HashMap<>();
-        }
-    }
-
-    @Override
-    public Map fetchProducts(  int pageNumber,int pageSize, String sortDir, String sortBy) {
-        Pageable pageable=  PageRequest.of(pageNumber,pageSize,Sort.by(sortBy).ascending());
-
-
-        Page<Product> products=  productRepository.findAll(pageable);
+        Page<Product> products=  productRepository.searchProductsByName(query,pageable);
 
         if(products.hasContent()){
             TitlePageDto<Product> titlePageDto =new TitlePageDto<>("products",products);
@@ -119,27 +109,42 @@ Optional<Product> duplicate = productRepository.findProductByNameIgnoreCase(prod
     }
 
     /**
-     *
+     * @todo Map products to display only product details and category,subcategory ids.
+     * @param pageNumber
+     * @param pageSize
+     * @param sortDir
+     * @param sortBy
+     * @return
+     */
+    @Override
+    public Map fetchProducts(  int pageNumber,int pageSize, String sortDir, String sortBy) {
+        Pageable pageable=  PageRequest.of(pageNumber,pageSize,Sort.by(sortBy).ascending());
+
+
+        Page<Product> products=  productRepository.findAll(pageable);
+
+
+        if(products.hasContent()){
+            TitlePageDto<Product> titlePageDto =new TitlePageDto<>("products",products);
+            return pageResponseDtoMapper.apply(titlePageDto);
+        }
+        else {
+            return  new HashMap<>();
+        }
+    }
+
+    /**
+     * @todo :further optimisation : current speed 200ms
      * @param productId
-     * @param categoryIds - gets multiple category ids from client separated by comas ie. 1,4,5
+     * @param categoryIds
      * @return
      * @throws CategoryNotFoundException
      * @throws ProductNotFoundException
      */
     @Override
-    public String addProductToCategory(Long productId, String categoryIds) throws CategoryNotFoundException, ProductNotFoundException {
+    public String addProductToCategory(Long productId, List<Long> categoryIds) throws CategoryNotFoundException, ProductNotFoundException {
 
-
-        String[] idArray = categoryIds.split(",");
-        List<Long> idList= new ArrayList<>();
-
-if(idArray.length>1){
-    for(int i=0;i< idArray.length;i++){
-        idList.add( Long.parseLong(idArray[i]));
-    }
-}
-
-        List<Category> categories = categoryRepository.findAncestry(idList);
+        List<Category> categories = categoryRepository.findAncestry(categoryIds);
         Optional<Product> productDb = productRepository.findById(productId);
 
         if (categories==null || categories.isEmpty()) { //check if last category exists.
@@ -153,10 +158,18 @@ if(idArray.length>1){
 
 
         Product foundProduct = productDb.get();
-        foundProduct.setCategory(categories);
+        foundProduct.setCategories(categories);
 
         //add remaining categories
         productRepository.save(foundProduct);
         return String.format("%s added to categories",foundProduct.getName()) ;
+    }
+
+    @Override
+    public void updateStock(Long productId, int quantity) throws ProductNotFoundException {
+       Product product = productRepository.findById(productId).orElseThrow(()->new ProductNotFoundException("Product not found"));
+       Integer stock = product.getStock() -quantity;
+       product.setStock(stock);
+       productRepository.save(product);
     }
 }

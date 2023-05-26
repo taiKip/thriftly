@@ -1,20 +1,23 @@
 package com.example.api.aws;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@RequestMapping("api/v1/files")
+@PreAuthorize("hasAnyRole('USER','MANAGER','ADMIN')")
 public class FileUploader {
-    private  final AwsS3Service awsS3Service;
-    public Map<String,String> uploadFileAndReturnUrl(MultipartFile file){
-        String imageUrl = awsS3Service.uploadFile(file);
-        Map<String,String> image = new HashMap<>();
-        image.put("imageUrl",awsS3Service.uploadFile(file));
-        return image;
+    private  final FileService fileService;
+    @PostMapping
+    public ResponseEntity<String> uploadFileAndReturnUrl(@RequestParam("file")MultipartFile file){
+        return ResponseEntity.ok(fileService.uploadFile(file));
     }
 }

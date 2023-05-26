@@ -1,11 +1,10 @@
 package com.example.api.utils;
 
+import org.springframework.stereotype.Service;
+
+@Service
 public class UtilityFunctions {
-    public static long[] deleteLastElement(long[] array){
-      long [] newArray = new long[array.length-1];
-      for(int i=0;i<newArray.length;i++){
-          newArray[i] = array[i];
-      }
-      return newArray;
-    }
+   public double calculateSubTotal(double price, double quantity){
+       return  price*quantity;
+   }
 }

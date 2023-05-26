@@ -1,7 +1,8 @@
 package com.example.api.orderitem;
 
-import com.example.api.shoporder.ShopOrder;
+import com.example.api.order.Order;
 import com.example.api.product.Product;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,9 +20,11 @@ public class OrderItem {
     private Long id;
     @ManyToOne
     @JoinColumn(name = "order_id")
-    private ShopOrder order;
+    @JsonIgnore
+    private Order order;
     @ManyToOne
-    @JoinColumn(name="product_id")
+    @JoinColumn(name = "product_id")
     private Product product;
-
+    private int quantity;
+    private double subtotal;
 }

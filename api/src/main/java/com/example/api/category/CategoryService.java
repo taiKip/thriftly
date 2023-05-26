@@ -18,9 +18,8 @@ public interface CategoryService {
 
     String deleteCategoryById(Long categoryId);
 
-    Map<String, List<Category>> fetchCategories();
+    List<Category> fetchCategories();
 
-    String addProductToCategory(Long categoryId, Long productId) throws CategoryNotFoundException, ProductNotFoundException, DuplicateException;
 
     Category fetchCategoryById(Long categoryId) throws CategoryNotFoundException;
 

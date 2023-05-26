@@ -12,11 +12,6 @@ import org.springframework.web.bind.annotation.*;
 public class ReviewController {
     private final ReviewService reviewService;
 
-    @PostMapping
-    public ResponseEntity<String> addReview(@RequestBody @Valid ReviewDto reviewDto) throws ProductNotFoundException {
-        return ResponseEntity.ok(reviewService.addReview(reviewDto));
-    }
-
     @PutMapping("/{id}")
     public ResponseEntity<Review> updateReview(@RequestBody @Valid ReviewDto reviewDto, @PathVariable("id") Long reviewId) throws ReviewNotFoundException {
         return ResponseEntity.ok(reviewService.updateReview(reviewDto, reviewId));

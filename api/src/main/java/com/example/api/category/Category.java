@@ -7,9 +7,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Data
@@ -22,6 +20,7 @@ public class Category {
     private Long id;
     private String name;
     private String image;
+    private String description;
     private int height;
 
     @JsonIgnore
@@ -31,8 +30,8 @@ public class Category {
 
     @OneToMany(mappedBy = "parent",cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JsonManagedReference
-    private List<Category> subCategories;
-   @ManyToMany(mappedBy = "category",cascade = CascadeType.ALL)
+    private List<Category> categories;
+   @ManyToMany(mappedBy = "categories",cascade = CascadeType.ALL)
    @JsonIgnore
     private List<Product> products =new ArrayList<>();
 

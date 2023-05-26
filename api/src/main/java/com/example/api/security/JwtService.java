@@ -12,37 +12,41 @@ import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Function;
 
 @Service
 public class JwtService {
     @Value("${spring.security.jwt.secret-key}")
-    private  String SECRET_KEY;
+    private String SECRET_KEY;
+
     /***
      *
      * @param token
      * @return userEmail
      */
     public String extractUserEmail(String token) {
-        return extractClaim(token,Claims::getSubject);
+        return extractClaim(token, Claims::getSubject);
     }
 
-    public <T> T extractClaim(String token, Function<Claims,T> claimsResolver){
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
 
     public String generateToken(
-            UserDetails userDetails
-    ){
+
+            User userDetails
+
+    ) {
         return Jwts
                 .builder()
                 .setSubject(userDetails.getUsername())
+                .claim("role",userDetails.getRole().toString())
+                .claim("name",userDetails.getName())
+                .claim("isBanned",userDetails.isBanned())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000*60*60))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 *24))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -50,7 +54,8 @@ public class JwtService {
     public boolean isTokenValid(String token, UserDetails userDetails) {
         return true;
     }
-    private Claims extractAllClaims(String token){
+
+    private Claims extractAllClaims(String token) {
         return Jwts
                 .parserBuilder()
                 .setSigningKey(getSignInKey())

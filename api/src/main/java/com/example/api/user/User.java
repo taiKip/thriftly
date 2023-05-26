@@ -1,4 +1,9 @@
 package com.example.api.user;
+
+import com.example.api.address.Address;
+import com.example.api.cart.Cart;
+import com.example.api.order.Order;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -13,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "_user")
@@ -24,20 +30,28 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String firstname;
-    private String lastname;
-
+    private String name;
     @Column(unique = true)
     private String email;
-
+@JsonIgnore
     private String password;
+private boolean isBanned;
     @Enumerated(EnumType.STRING)
     private Role role;
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<Order> orders;
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private Set<Cart> carts;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="address_id",referencedColumnName = "id")
+    private Address address;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+        return role.getAuthorities();
     }
 
     @Override

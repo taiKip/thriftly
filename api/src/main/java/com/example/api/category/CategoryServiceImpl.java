@@ -1,19 +1,18 @@
 package com.example.api.category;
 
-import com.example.api.error.DuplicateException;
+
 import com.example.api.error.InvalidArgument;
-import com.example.api.product.Product;
-import com.example.api.product.ProductNotFoundException;
+
 import com.example.api.product.ProductRepository;
 import com.example.api.utils.PageResponseDtoMapper;
-import com.google.gson.Gson;
+
 import jakarta.transaction.Transactional;
-import jakarta.validation.ValidationException;
+
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.MethodArgumentNotValidException;
+
 
 import java.util.*;
 
@@ -59,6 +58,7 @@ public class CategoryServiceImpl implements CategoryService {
         Category newCategory = new Category();
         newCategory.setName(categoryDto.name());
         newCategory.setImage(categoryDto.image());
+        newCategory.setDescription(categoryDto.description());
         if (categoryDto.parentId() == null) {
             Optional<Category> headCategory = categoryRepository.findHeadCategory();
             if (headCategory.isPresent()) {
@@ -101,7 +101,7 @@ public class CategoryServiceImpl implements CategoryService {
      * results get paginated.
      */
     @Override
-    public Map<String, List<Category>> fetchCategories() {
+    public  List<Category> fetchCategories() {
         Map<String, List<Category>> response = new HashMap<>();
         var categories = categoryRepository.findAll();
         List<Category> categoryList = new ArrayList<>();
@@ -114,49 +114,12 @@ public class CategoryServiceImpl implements CategoryService {
                 }
             }
         }
-        response.put("categories:", categoryList);
-        return response;
+
+        return categoryList;
 
     }
 
-    /**
-     * @todo operation too slow, needs further optimization: current:200ms
-     * @param categoryId
-     * @param productId
-     * @return
-     * @throws CategoryNotFoundException
-     * @throws ProductNotFoundException
-     * @throws DuplicateException
-     */
-    @Override
-    public String addProductToCategory(Long categoryId, Long productId) throws CategoryNotFoundException,
-            ProductNotFoundException, DuplicateException {
-        Optional<Category> categoryDb = categoryRepository.findById(categoryId);
-        Optional<Product> productDb = productRepository.findById(productId);
-        if (categoryDb.isEmpty()) {
-            throw new CategoryNotFoundException("Category does not exist");
-        }
-        if (productDb.isEmpty()) {
-            throw new ProductNotFoundException("Product not found");
-        }
-        Category foundCategory = categoryDb.get();
 
-        Product foundProduct = productDb.get();
-        List<Product> products;
-
-        products = foundCategory.getProducts();
-        if (products.contains(foundProduct)) {
-            throw new DuplicateException("A duplicate exists in the same category");
-        }
-        products.add(foundProduct);
-        foundCategory.setProducts(products);
-
-
-        categoryRepository.save(foundCategory);
-
-
-        return String.format("%s added to %s", foundProduct.getName(), foundCategory.getName());
-    }
 
     @Override
     @Transactional

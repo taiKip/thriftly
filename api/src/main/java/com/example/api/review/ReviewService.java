@@ -8,10 +8,11 @@ import org.springframework.stereotype.Service;
 @Service
 public interface ReviewService {
 
-    String addReview(ReviewDto requestDto) throws ProductNotFoundException;
+    String addReview(Long productId,ReviewDto requestDto) throws ProductNotFoundException;
 
 
     Review updateReview(ReviewDto reviewDto, Long reviewId) throws ReviewNotFoundException;
 
     String deleteReview(Long reviewId) throws ReviewNotFoundException;
+    Double averageReview(Long productId);
 }

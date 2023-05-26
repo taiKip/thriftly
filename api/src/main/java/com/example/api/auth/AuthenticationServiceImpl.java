@@ -38,10 +38,10 @@ if(userDb.isPresent()){
 }
         User user = User.builder()
                 .email(request.email())
-                .firstname(request.firstname())
-                .lastname(request.lastname())
+                .name(request.name())
                 .password(passwordEncoder.encode(request.password()))
                 .role(Role.USER)
+                .isBanned(false)
                 .build();
         userRepository.save(user);
         String token = jwtService.generateToken(user);
