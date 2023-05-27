@@ -12,6 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/order-status")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 public class OrderStatusController {
     private final OrderStatusService orderStatusService;
     @PostMapping

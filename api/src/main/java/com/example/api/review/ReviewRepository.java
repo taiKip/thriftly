@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ReviewRepository extends JpaRepository<Review,Long> {
 @Query(value = "SELECT AVG(rating) FROM review WHERE product_id=?1",nativeQuery = true)
-    Double averageRating(Long productId);
+Double averageRating(Long productId);
 }

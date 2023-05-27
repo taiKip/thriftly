@@ -8,10 +8,11 @@ import com.example.api.product.ProductNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+import java.util.HashMap;
 
 
 @RestController
@@ -20,9 +21,10 @@ import java.util.Map;
 public class OrderController {
     private final OrderService OrderService;
     @PostMapping
-    public ResponseEntity<Map<String,Object>> placeOrder(@RequestBody @Valid OrderDto orderDto) throws ProductNotFoundException,
+    public ResponseEntity<OrderResponseDto> placeOrder(@RequestBody @Valid OrderDto orderDto) throws ProductNotFoundException,
             OrderStatusNotFoundException, AddressNotFoundException, OutOfStockException {
-        return  ResponseEntity.ok(OrderService.placeOrder(orderDto));
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return  ResponseEntity.ok(new OrderResponseDto(auth.getName()));
 
     }
     @PutMapping("/{orderId}/order-items/{orderItem}")

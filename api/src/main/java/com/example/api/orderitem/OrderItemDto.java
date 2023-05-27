@@ -1,4 +1,6 @@
 package com.example.api.orderitem;
 
-public record OrderItemDto(Long productId,Integer quantity) {
+import jakarta.validation.constraints.NotNull;
+
+public record OrderItemDto(@NotNull Long productId, @NotNull Integer quantity) {
 }

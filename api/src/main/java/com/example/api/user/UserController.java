@@ -4,7 +4,6 @@ import com.example.api.utils.AppConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -18,7 +17,7 @@ public class UserController {
 
 
     @GetMapping
-    public ResponseEntity<Map> fetchUsers(@RequestParam(value = "sortBy", defaultValue
+    public ResponseEntity<Map<String,Object>> fetchUsers(@RequestParam(value = "sortBy", defaultValue
             = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
                                           @RequestParam(value = "pageNo", defaultValue
                                                   = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,

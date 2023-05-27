@@ -1,5 +1,6 @@
 package com.example.api.security;
 
+import com.example.api.token.TokenService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,7 +22,7 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserDetailsService userService;
-
+private final TokenService tokenService;
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
@@ -47,11 +48,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
             UserDetails user = userService.loadUserByUsername(userEmail);
-/***
+
+/**
  * @desc if token is valid create ,object of User...Token created to be passed to SecurityContextHolder
  * to update context but first enrich it with details of request
+ * also check if token is expired in db
  */
-            if (jwtService.isTokenValid(jwt, user)) {
+            if (jwtService.isTokenValid(jwt, user) && tokenService.isTokenValid(jwt)) {
                 UsernamePasswordAuthenticationToken authenticationToken =
                         new UsernamePasswordAuthenticationToken(
                                 user,

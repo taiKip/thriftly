@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 @RestController
 @RequestMapping("api/v1/products")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 public class ProductController {
     private final ProductService productService;
     private final ReviewService reviewService;
