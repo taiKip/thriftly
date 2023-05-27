@@ -18,6 +18,10 @@ import java.util.function.Function;
 public class JwtService {
     @Value("${spring.security.jwt.secret-key}")
     private String SECRET_KEY;
+    @Value("${spring.security.jwt.expiration}")
+    private long JWT_EXPIRATION;
+    @Value("${spring.security.jwt.refresh-token.expiration}")
+    private long REFRESH_EXPIRATION;
 
     /***
      *
@@ -46,11 +50,19 @@ public class JwtService {
                 .claim("name",userDetails.getName())
                 .claim("isBanned",userDetails.isBanned())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 *24))
+                .setExpiration(new Date(System.currentTimeMillis() + JWT_EXPIRATION))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
-
+public String generateRefreshToken(User userDetails){
+        return Jwts
+                .builder()
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + REFRESH_EXPIRATION))
+                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+                .compact();
+}
     public boolean isTokenValid(String token, UserDetails userDetails) {
         return true;
     }

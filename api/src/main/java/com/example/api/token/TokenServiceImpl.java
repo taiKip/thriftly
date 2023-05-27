@@ -57,5 +57,18 @@ public class TokenServiceImpl implements TokenService{
         tokenRepository.save(foundToken);
     }
 
+    @Override
+    public void saveToken(User user, String jwtToken) {
+        Token token = Token
+                .builder()
+                .user(user)
+                .token(jwtToken)
+                .tokenType(TokenType.BEARER)
+                .revoked(false)
+                .expired(false)
+                .build();
+        tokenRepository.save(token);
+    }
+
 
 }

@@ -22,6 +22,9 @@ spring:
       regex-pattern: "^(?=.*\\d)(?=.*[a-z])(?=.*[!@#$%^&*])(?=.*[A-Z])(?=.*[a-zA-Z]).{6,}$"
     jwt:
       secret-key: ${SECRET_KEY}
+      expiration: 60000 #1 day
+      refresh-token:
+        expiration: 604800000 #7 days
 server:
   error:
     include-binding-errors: always

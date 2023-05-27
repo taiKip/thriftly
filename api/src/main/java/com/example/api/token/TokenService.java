@@ -12,4 +12,6 @@ public interface TokenService {
 
 
     void inValidateToken(String jwt);
+
+    void saveToken(User user, String authenticationToken);
 }

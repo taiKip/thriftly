@@ -7,7 +7,7 @@ import com.example.api.orderstatus.OrderStatusNotFoundException;
 import com.example.api.product.OutOfStockException;
 import com.example.api.product.ProductNotFoundException;
 import com.example.api.review.ReviewNotFoundException;
-import com.example.api.user.UserNameExists;
+import com.example.api.user.UserNameExistsException;
 import com.example.api.user.UserRoleNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,9 +41,9 @@ public class RestResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
     }
 
-    @ExceptionHandler(UserNameExists.class)
-    public ResponseEntity<ErrorMessage> userNameExists(UserNameExists userNameExists) {
-        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.CONFLICT, userNameExists.getMessage());
+    @ExceptionHandler(UserNameExistsException.class)
+    public ResponseEntity<ErrorMessage> userNameExists(UserNameExistsException userNameExistsException) {
+        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.CONFLICT, userNameExistsException.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorMessage);
     }
 
