@@ -1,4 +1,5 @@
 package com.example.api.product;
+
 import com.example.api.category.Category;
 import com.example.api.entity.BaseEntity;
 import com.example.api.orderitem.OrderItem;
@@ -9,7 +10,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 @Entity
@@ -23,18 +26,16 @@ public class Product extends BaseEntity {
     private Long id;
     private String name;
     private String description;
-    private String image;
+    private String imageUrl;
     private Integer stock;
     private Double price;
-private Double averageRating;
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "product_category",
-            joinColumns = @JoinColumn(name = "product_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id"))
-    private List<Category> categories;
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Double averageRating;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
     @JsonIgnore
+    private Category category;
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> cartItems;
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Review> reviews =new ArrayList<>();
+    private List<Review> reviews = new ArrayList<>();
 }

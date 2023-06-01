@@ -6,11 +6,11 @@ spring:
     driver-class-name: org.postgresql.Driver
   servlet:
     multipart:
-      max-file-size: 100MB
-      max-request-size: 100MB
+      max-file-size: 200MB
+      max-request-size: 215MB
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
@@ -22,9 +22,9 @@ spring:
       regex-pattern: "^(?=.*\\d)(?=.*[a-z])(?=.*[!@#$%^&*])(?=.*[A-Z])(?=.*[a-zA-Z]).{6,}$"
     jwt:
       secret-key: ${SECRET_KEY}
-      expiration: 60000 #1 day
+      expiration: 2000000
       refresh-token:
-        expiration: 604800000 #7 days
+        expiration: 604800000
 server:
   error:
     include-binding-errors: always

@@ -9,7 +9,8 @@ import lombok.Builder;
 public record ProductDto(@NotNull @NotEmpty String name,
                          @NotNull @NotEmpty String description,
                          @NotNull @Min(1) Integer stock,
-                         @NotNull @NotEmpty Double price,
+                         @NotNull  Double price,
+                         @NotNull Long categoryId,
                          @NotNull @NotEmpty String imageUrl) {
 
 }

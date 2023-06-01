@@ -2,6 +2,7 @@ package com.example.api.security;
 
 import com.example.api.user.Role;
 import com.example.api.user.Role.*;
+import com.example.api.utils.AppConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -53,8 +54,7 @@ public class SecurityConfiguration {
                 .disable()
                 .cors().and()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/v1/auth/**", "/api/v1/login/**", "/api/v1/products/**",
-                        "/api/v1/categories/**", "/api/v1/blogs/**", "api/v1/blogs/**","api/v1/tags/**")
+                .requestMatchers(AppConstants.AUTH_WHITELIST)
                 .permitAll()
                 .anyRequest()
                 .authenticated()

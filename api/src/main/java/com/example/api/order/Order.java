@@ -23,7 +23,7 @@ public class Order extends BaseEntity {
     @Id
     @GeneratedValue
     private Long id;
-    private double total;
+    private Double total;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;

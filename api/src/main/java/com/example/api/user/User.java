@@ -47,9 +47,13 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     @JsonIgnore
     private Set<Blog> blogs;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "address_id", referencedColumnName = "id")
-    private Address address;
+    @ManyToMany
+    @JoinTable(
+            name = "user_address",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "address_id", referencedColumnName = "id")
+    )
+    private Set<Address> addresses;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

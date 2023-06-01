@@ -15,8 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 
 @RestControllerAdvice
@@ -48,53 +47,61 @@ public class RestResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, ErrorMessage>> handleValidationException(MethodArgumentNotValidException exception) {
-        Map<String, ErrorMessage> errorMap = new HashMap<>();
+    public ResponseEntity<Set<ErrorMessage>> handleValidationException(MethodArgumentNotValidException exception) {
+
+        Set<ErrorMessage> errors = new HashSet<>();
         exception.getBindingResult().getFieldErrors().forEach(error -> {
-            errorMap.put(error.getField(), new ErrorMessage(HttpStatus.BAD_REQUEST,error.getDefaultMessage()));
+            errors.add(new ErrorMessage(HttpStatus.BAD_REQUEST, String.format("%s %s", error.getField(), error.getDefaultMessage())));
+
         });
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMap);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 
-@ExceptionHandler(ReviewNotFoundException.class)
-    public ResponseEntity<ErrorMessage> reviewNotFoundException(ReviewNotFoundException reviewNotFoundException){
-        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.NOT_FOUND,reviewNotFoundException.getMessage());
+    @ExceptionHandler(ReviewNotFoundException.class)
+    public ResponseEntity<ErrorMessage> reviewNotFoundException(ReviewNotFoundException reviewNotFoundException) {
+        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.NOT_FOUND, reviewNotFoundException.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
-}
-@ExceptionHandler(DuplicateException.class)
-    public ResponseEntity<ErrorMessage> duplicateRecordExistsException(DuplicateException duplicateException){
-        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.CONFLICT,duplicateException.getMessage());
+    }
+
+    @ExceptionHandler(DuplicateException.class)
+    public ResponseEntity<ErrorMessage> duplicateRecordExistsException(DuplicateException duplicateException) {
+        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.CONFLICT, duplicateException.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(errorMessage);
-}
+    }
+
     @ExceptionHandler(InvalidArgument.class)
-    public ResponseEntity<ErrorMessage> InvalidArgumentException(InvalidArgument invalidArgument){
-        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST,invalidArgument.getMessage());
+    public ResponseEntity<ErrorMessage> InvalidArgumentException(InvalidArgument invalidArgument) {
+        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST, invalidArgument.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
     }
 
     @ExceptionHandler(DataNotSaved.class)
-    public ResponseEntity<ErrorMessage> dataNotSaved(DataNotSaved dataNotSaved){
-        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR,dataNotSaved.getMessage());
+    public ResponseEntity<ErrorMessage> dataNotSaved(DataNotSaved dataNotSaved) {
+        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR, dataNotSaved.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
     }
+
     @ExceptionHandler(OrderStatusNotFoundException.class)
-    public ResponseEntity<ErrorMessage> orderStatusNotFound(OrderStatusNotFoundException orderStatusNotFoundException){
+    public ResponseEntity<ErrorMessage> orderStatusNotFound(OrderStatusNotFoundException orderStatusNotFoundException) {
         ErrorMessage errorMessage = new ErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR, orderStatusNotFoundException.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
     }
+
     @ExceptionHandler(OutOfStockException.class)
-    public ResponseEntity<ErrorMessage> outOfStock(OutOfStockException outOfStockException){
+    public ResponseEntity<ErrorMessage> outOfStock(OutOfStockException outOfStockException) {
         ErrorMessage errorMessage = new ErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR, outOfStockException.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
     }
+
     @ExceptionHandler(AddressNotFoundException.class)
-    public ResponseEntity<ErrorMessage> addressNotFoundException(AddressNotFoundException addressNotFoundException){
-        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.NOT_FOUND,addressNotFoundException.getMessage());
+    public ResponseEntity<ErrorMessage> addressNotFoundException(AddressNotFoundException addressNotFoundException) {
+        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.NOT_FOUND, addressNotFoundException.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
     }
+
     @ExceptionHandler(UserRoleNotFoundException.class)
-    public ResponseEntity<ErrorMessage> userRoleNotFoundException(UserRoleNotFoundException userRoleNotFoundException){
-        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.NOT_FOUND,userRoleNotFoundException.getMessage());
+    public ResponseEntity<ErrorMessage> userRoleNotFoundException(UserRoleNotFoundException userRoleNotFoundException) {
+        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.NOT_FOUND, userRoleNotFoundException.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
     }
 }

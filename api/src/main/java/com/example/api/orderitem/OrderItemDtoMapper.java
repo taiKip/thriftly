@@ -11,7 +11,7 @@ public class OrderItemDtoMapper implements Function<OrderItem, OrderItemResponse
                 orderItem.getId(),
                 orderItem.getProduct().getName(),
                 orderItem.getProduct().getDescription(),
-                orderItem.getProduct().getImage(),
+                orderItem.getProduct().getImageUrl(),
                 orderItem.getProduct().getPrice(),
                 orderItem.getQuantity(),
                 orderItem.getSubtotal()

@@ -20,9 +20,10 @@ public interface ProductService {
     String deleteProductById(Long productId);
      Map<String,Object> searchProductsByName(String query, int pageSize, int pageNumber);
 
-    Map<String,Object> fetchProducts(int pageNumber, int pageSize, String sortDir,String sortBy);
+    Map<String,Object> fetchProducts(int pageNumber, int pageSize, String sortDir,String sortBy,Long categoryId);
 
-    String addProductToCategory(Long productId, List<Long> categoryIds) throws CategoryNotFoundException, ProductNotFoundException;
 
     void updateStock(Long productId, int quantity) throws ProductNotFoundException;
+
+
 }

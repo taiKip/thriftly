@@ -26,7 +26,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.authenticate(request));
     }
 
-    @PostMapping("/refresh")
+    @GetMapping("/refresh")
     public void refreshToken(
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {

@@ -25,8 +25,8 @@ public class Address {
     private String city;
     private String zipcode;
 
-    @OneToOne(mappedBy = "address")
-    private User user;
+    @ManyToMany(mappedBy = "addresses")
+    private List<User> users;
     @OneToMany(mappedBy = "address")
     private List<Order> orders;
 }

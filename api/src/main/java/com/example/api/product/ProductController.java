@@ -6,6 +6,9 @@ import com.example.api.error.DuplicateException;
 import com.example.api.review.ReviewDto;
 import com.example.api.review.ReviewService;
 import com.example.api.utils.AppConstants;
+import com.sun.jdi.LongValue;
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -15,12 +18,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
-import java.util.stream.Stream;
+
 
 @RestController
 @RequestMapping("api/v1/products")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+
+@Tag(name = "Products")
 public class ProductController {
     private final ProductService productService;
     private final ReviewService reviewService;
@@ -34,18 +38,20 @@ public class ProductController {
      */
     @PostMapping
     @PreAuthorize("hasAuthority('management:create')")
+    @Hidden
     public ResponseEntity<Product> createProduct(
-            @RequestBody ProductDto productDto) throws CategoryNotFoundException,
+            @RequestBody @Valid ProductDto productDto) throws CategoryNotFoundException,
             DuplicateException {
         return ResponseEntity.ok(productService.createProduct(productDto));
     }
 
-    /***
+    /**
      *
      * @param sortBy
      * @param pageNo
      * @param pageSize
      * @param sortDir
+     * @param categoryId
      * @return
      */
     @GetMapping
@@ -57,19 +63,21 @@ public class ProductController {
             @RequestParam(value = "pageSize", defaultValue
                     = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
             @RequestParam(value = "sortDir", defaultValue
-                    = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir
+                    = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir,
+            @RequestParam(value="categoryId",required = false,defaultValue = AppConstants.DEFAULT_CATEGORY_ID)Long categoryId
     ) {
-        return ResponseEntity.ok(productService.fetchProducts(pageNo, pageSize, sortDir, sortBy));
+        return ResponseEntity.ok(productService.fetchProducts(pageNo, pageSize, sortDir, sortBy,categoryId));
     }
 
     /***
      * @desc update product
-     * @access Private - Admin/SuperAdmin
+     * @access Private - Management permissions
      * @param productDto
      * @return
      */
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('management:update')")
+    @Hidden
     public ResponseEntity<Product> updateProduct(
             @RequestBody UpdateProductDto productDto,
             @PathVariable("id") Long productId) throws ProductNotFoundException {
@@ -96,6 +104,7 @@ public class ProductController {
      */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('management:delete')")
+    @Hidden
     public ResponseEntity<String> deleteProductById(
             @PathVariable("id") Long productId) {
         return ResponseEntity.ok(productService.deleteProductById(productId));
@@ -118,22 +127,11 @@ public class ProductController {
         return ResponseEntity.ok(productService.searchProductsByName(query, pageNo, pageSize));
     }
 
-    @PostMapping("/{productId}/categories")
-    @PreAuthorize("hasAuthority('management:create')")
-    public ResponseEntity<String> addProductToCategory(@PathVariable("productId") Long productId,
-                                                       @RequestParam(value = "cat1", required = true) Long cat1,
-                                                       @RequestParam(value = "cat2", required = false) Long cat2,
-                                                       @RequestParam(value = "cat3", required = false) Long cat3,
-                                                       @RequestParam(value = "cat4", required = false) Long cat4,
-                                                       @RequestParam(value = "cat5", required = false) Long cat5) throws CategoryNotFoundException,
-            ProductNotFoundException {
-        List<Long> categoryIds = new ArrayList<>();
-        Stream.of(cat1, cat2, cat3, cat4, cat5).filter(Objects::nonNull).forEach(categoryIds::add);
 
-        return ResponseEntity.ok(productService.addProductToCategory(productId, categoryIds));
-    }
+
 
     @PostMapping("/{productId}/reviews")
+    @Hidden
     public ResponseEntity<String> addReview(@PathVariable("productId") Long productId, @RequestBody @Valid ReviewDto reviewDto) throws ProductNotFoundException {
         return ResponseEntity.ok(reviewService.addReview(productId, reviewDto));
     }

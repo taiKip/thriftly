@@ -1,11 +1,11 @@
-package com.example.api.uploadfile;
+package com.example.api.aws;
 
-import com.example.api.aws.AwsS3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class UploadFileController {
     private final AwsS3Service awsS3Service;
     @PostMapping
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file){
+    public ResponseEntity<FileUploadResponseDto> uploadFile(@RequestParam("file") MultipartFile file){
         return ResponseEntity.ok(awsS3Service.uploadFile(file));
     }
 

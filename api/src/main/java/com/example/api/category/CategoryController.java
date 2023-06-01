@@ -1,15 +1,16 @@
 package com.example.api.category;
 
-import com.example.api.error.DuplicateException;
 import com.example.api.error.InvalidArgument;
+import com.example.api.product.Product;
 import com.example.api.product.ProductNotFoundException;
+import io.swagger.v3.oas.annotations.Hidden;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("api/v1/categories")
@@ -33,19 +34,27 @@ public class CategoryController {
     /**
      *
      * @param categoryId
-     * @param productId
+     * @param productDto
      * @return
      * @throws CategoryNotFoundException
      * @throws ProductNotFoundException
-     * @throws DuplicateException
      */
+    @PostMapping("/{categoryId}/products")
+    @PreAuthorize("hasAuthority('management:create')")
+    @Hidden
+    public ResponseEntity<ProductRequestDto> addProductToCategory(
+            @PathVariable("categoryId") Long categoryId, @RequestBody @Valid NewProductDto productDto)
+            throws CategoryNotFoundException, ProductNotFoundException {
+        return ResponseEntity.ok(categoryService.addProductToCategory(categoryId, productDto.productId()));
+    }
+
     /***
      * @desc Fetch categories
      * @access public
      * @return List of categories
      */
     @GetMapping
-    public ResponseEntity <List<Category>> fetchCategories() {
+    public ResponseEntity<List<Category>> fetchCategories() {
         return ResponseEntity.ok(categoryService.fetchCategories());
     }
 

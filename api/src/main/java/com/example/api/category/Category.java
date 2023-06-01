@@ -7,7 +7,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -21,18 +23,8 @@ public class Category {
     private String name;
     private String image;
     private String description;
-    private int height;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id")
-    private Category parent;
-
-    @OneToMany(mappedBy = "parent",cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    @JsonManagedReference
-    private List<Category> categories;
-   @ManyToMany(mappedBy = "categories",cascade = CascadeType.ALL)
-   @JsonIgnore
-    private List<Product> products =new ArrayList<>();
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
+    private Set<Product> products = new HashSet<>();
 
 }
