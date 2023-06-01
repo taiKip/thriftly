@@ -1,0 +1,20 @@
+.wrapper {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  margin-left: auto;
+  margin-right: auto;
+  overflow-y: scroll;
+  gap: 8px;
+  margin-bottom: 50px;
+}
+@media screen and (min-width: 600px) {
+  .wrapper {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+@media screen and (min-width: 900px) {
+  .wrapper {
+    grid-template-columns: repeat(5, 1fr);
+  }
+ 
+}
