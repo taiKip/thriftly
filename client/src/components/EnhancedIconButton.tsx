@@ -1,6 +1,8 @@
-import { IconButton, Typography } from '@mui/material'
 import React, { ReactNode } from 'react'
+import IconButton from '@mui/material/IconButton'
+import Typography from '@mui/material/Typography'
 import { useNavigate } from 'react-router-dom'
+
 import { useAppDispatch } from '../app/hooks'
 import { setPageInfo } from '../features/page/pageInfoSlice'
 

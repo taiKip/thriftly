@@ -75,11 +75,11 @@ public class ProductController {
      * @param productDto
      * @return
      */
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     @PreAuthorize("hasAuthority('management:update')")
     @Hidden
     public ResponseEntity<Product> updateProduct(
-            @RequestBody UpdateProductDto productDto,
+            @RequestBody @Valid UpdateProductDto productDto,
             @PathVariable("id") Long productId) throws ProductNotFoundException {
         return ResponseEntity.ok(productService.updateProduct(productDto, productId));
     }

@@ -46,7 +46,7 @@ const UpdateProductForm = () => {
 
   const [nameError, setNameError] = useState(false)
   const [descriptionError, setDescriptionError] = useState(false)
-  const [imageUrl, setImageUrl] = useState<string>('')
+  const [imageUrl, setImageUrl] = useState(product?.imageUrl)
 
   const [error, setError] = useState<IError | null>(null)
 
@@ -59,32 +59,24 @@ const UpdateProductForm = () => {
   const handleStock = (event: ChangeEvent<HTMLInputElement>) => {
     setStock(event.target.value)
   }
-  const handleDescription = (event: ChangeEvent<HTMLInputElement>) => {
-    setDescription(event.target.value)
-  }
-  const handleName = (event: ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value)
-  }
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
-
-    console.log(imageUrl)
-    setNameError(false)
-    setDescriptionError(false)
-    if (name === '') {
-      setNameError(true)
-    }
-    if (description === '') {
-      setDescriptionError(true)
-    }
-
-    if (name && description && categoryId && imageUrl && price && stock) {
-      const product = { name, categoryId: +categoryId, imageUrl, price: +price, stock: +stock }
-console.log(product)
-      await updateProduct(product)
+    if (productId && name && description && categoryId && price && stock) {
+      console.log('updating')
+      const product = {
+        name,
+        categoryId: +categoryId,
+        description,
+        imageUrl,
+        price: +price,
+        stock: +stock
+      }
+      console.log(product)
+      await updateProduct({ product, productId })
         .unwrap()
         .then((payload) => {
+          console.log(payload)
           setCategoryId('')
           setDescription('')
           setName('')
@@ -100,7 +92,7 @@ console.log(product)
     }
   }
   return (
-    <Container sx={{ marginTop: 2, height: '100vh', overflow: 'scroll' }}>
+    <Container sx={{ marginTop: 2, overflow: 'scroll' }}>
       <Typography variant="h6" component="h2" color="textSecondary" gutterBottom>
         Update Product
       </Typography>
@@ -131,7 +123,7 @@ console.log(product)
         />
         <CardMedia
           component="img"
-          image={product?.imageUrl}
+          image={imageUrl}
           sx={{ borderRadius: 1, objectFit: 'contain', maxHeight: '30vh', m: 2 }}
         />
         <UploadFile setFileUrl={setImageUrl} />

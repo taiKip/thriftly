@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 public record UpdateProductDto(String name,
                                String description,
                                @Min(1) int stock,
-                               double price,
+                               Double price,
                                Long categoryId,
                                String imageUrl) {
 }

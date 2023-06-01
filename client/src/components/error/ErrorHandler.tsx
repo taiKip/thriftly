@@ -3,10 +3,10 @@ import { IError } from '../../interfaces'
 import Snackbar from '@mui/material/Snackbar'
 import Alert from '@mui/material/Alert'
 
-const ErrorHandler = ({ error, open }: { error: IError; open: boolean }) => {
+const ErrorHandler = ({ error }: { error: IError}) => {
   return (
     <Snackbar
-      open={open}
+      open={Boolean(error)}
       autoHideDuration={4000}
       anchorOrigin={{
         vertical: 'top',

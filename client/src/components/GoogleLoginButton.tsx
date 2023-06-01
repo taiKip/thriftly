@@ -12,6 +12,7 @@ const GoogleLoginButton = () => {
       variant="contained"
       sx={{ display: 'flex', gap: 1 }}
       color="info"
+      fullWidth
       onClick={() => login()}>
       <img src={GoogleIcon} height="16px" />
       Continue with google

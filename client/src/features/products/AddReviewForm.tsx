@@ -60,7 +60,7 @@ const AddReviewForm = ({
         setFormError(true)
       } finally {
         toggleReviewForm()
-        console.log('Pop up shown')
+
         showPopUp()
       }
     }

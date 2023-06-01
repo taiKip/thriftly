@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.awt.color.ProfileDataException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -61,25 +62,27 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product updateProduct(UpdateProductDto productDto, Long productId) throws ProductNotFoundException {
-        Optional<Product> productDb = productRepository.findById(productId);
-        if (productDb.isEmpty()) {
-            throw new ProductNotFoundException("Product does not exist");
-        }
+        Product foundProduct = productRepository.findById(productId).orElseThrow(()->new ProductNotFoundException("Product not found"));
+
+
         if (Objects.nonNull(productDto.name()) && !productDto.name().isEmpty()) {
-            productDb.get().setName(productDto.name());
+            foundProduct.setName(productDto.name());
         }
         if (productDto.price() > 0) {
-            productDb.get().setPrice(productDto.price());
+            foundProduct.setPrice(productDto.price());
         }
-        if (Objects.nonNull(productDto.description()) && !productDto.name().isEmpty()) {
-            productDb.get().setDescription(productDto.description());
+        if(productDto.stock()>0){
+            foundProduct.setStock(productDto.stock());
+        }
+        if (!productDto.name().isEmpty()) {
+            foundProduct.setDescription(productDto.description());
         }
 
         if (Objects.nonNull(productDto.imageUrl()) && !productDto.name().isEmpty()) {
-            productDb.get().setImageUrl(productDto.imageUrl());
+            foundProduct.setImageUrl(productDto.imageUrl());
         }
 
-        return productRepository.save(productDb.get());
+        return productRepository.save(foundProduct);
     }
 
     @Override

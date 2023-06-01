@@ -65,7 +65,6 @@ const Login = () => {
         .catch((err) => {
           if (err.status === 400) {
             setError(`Bad request::check user details`)
-            console.log(400)
           }
           if (err.status === 401) {
             setError('Unauthorized')
@@ -105,7 +104,7 @@ const Login = () => {
           <TextField
             onChange={(e) => setEmail(e.target.value)}
             sx={fieldStyle}
-            label="email"
+            label="Email"
             color="secondary"
             fullWidth
             required

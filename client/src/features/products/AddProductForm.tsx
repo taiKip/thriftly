@@ -24,13 +24,17 @@ import ErrorHandler from '../../components/error/ErrorHandler'
 
 const AddProductForm = () => {
   const [addNewProduct, { isLoading }] = useAddNewProductMutation()
-  const { data: categories, isLoading: categoryIdIsLoading } = useGetCategoriesQuery()
+  const { data: categories, isLoading: categoryIdIsLoading } = useGetCategoriesQuery(undefined, {
+    pollingInterval: 8000,
+    refetchOnMountOrArgChange: true,
+    refetchOnFocus: true
+  })
   const navigate = useNavigate()
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [categoryId, setCategoryId] = useState('')
   const [price, setPrice] = useState('')
-  const [stock, setStock] = useState('')
+  const [stock, setStock] = useState('1')
   const [formError, setFormError] = useState(false)
 
   const [nameError, setNameError] = useState(false)
@@ -58,7 +62,6 @@ const AddProductForm = () => {
     e.preventDefault()
 
     setFormError(false)
-    console.log(imageUrl)
     setNameError(false)
     setDescriptionError(false)
     if (name === '') {
@@ -68,12 +71,12 @@ const AddProductForm = () => {
       setDescriptionError(true)
     }
 
-    if (name && description && categoryId && imageUrl && price) {
+    if (name && description && categoryId && imageUrl && price && stock) {
       const itemPrice = +price
 
       const product = {
-        name,
-        description,
+        name: name.trim(),
+        description: description.trim(),
         categoryId: +categoryId,
         imageUrl,
         price: itemPrice,
@@ -103,7 +106,6 @@ const AddProductForm = () => {
       <Typography variant="h6" component="h2" color="textSecondary" gutterBottom>
         Add New Product
       </Typography>
-
       <form noValidate autoComplete="off" onSubmit={handleSubmit}>
         <TextField
           onChange={handleName}
@@ -152,7 +154,6 @@ const AddProductForm = () => {
               value={stock}
               color="secondary"
               onChange={handleStock}
-              startAdornment={<InputAdornment position="start">€</InputAdornment>}
               label="Price"
             />
           </FormControl>

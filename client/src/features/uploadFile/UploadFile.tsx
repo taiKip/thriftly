@@ -8,7 +8,6 @@ import image from '../../assets/image.avif'
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate'
 import { useUploadImageMutation } from './uploadSlice'
 import { ChangeEvent, useEffect, useState } from 'react'
-import { TimeoutId } from '@reduxjs/toolkit/dist/query/core/buildMiddleware/types'
 
 const UploadFile = ({ setFileUrl }: { setFileUrl: (url: string) => void }) => {
   const [uploadFile, { isLoading, isSuccess }] = useUploadImageMutation()

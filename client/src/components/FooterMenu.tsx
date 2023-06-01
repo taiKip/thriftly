@@ -1,6 +1,14 @@
-import { Dashboard, RssFeedOutlined, Search, ShoppingCartOutlined } from '@mui/icons-material'
-import { AppBar, Badge, Icon, IconButton, Toolbar, Typography } from '@mui/material'
+import Dashboard from '@mui/icons-material/Dashboard'
+import RssFeedOutlined from '@mui/icons-material/RssFeedOutlined'
+import Search from '@mui/icons-material/Search'
+import ShoppingCartOutlined from '@mui/icons-material/ShoppingCartOutlined'
+import AppBar from '@mui/material/AppBar'
+import Badge from '@mui/material/Badge'
+import Icon from '@mui/material/Icon'
+import IconButton from '@mui/material/IconButton'
+import Toolbar from '@mui/material/Toolbar'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
+
 import EnhancedIconButton from './EnhancedIconButton'
 import { useAppSelector } from '../app/hooks'
 

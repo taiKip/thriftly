@@ -1,6 +1,7 @@
-import { ArrowBack, ArrowForward } from '@mui/icons-material'
-import { IconButton, Stack } from '@mui/material'
-import React from 'react'
+import ArrowBack from '@mui/icons-material/ArrowBack'
+import ArrowForward from '@mui/icons-material/ArrowForward'
+import Stack from '@mui/material/Stack'
+import IconButton from '@mui/material/IconButton'
 
 interface IActionButtonProps {
   next: () => void

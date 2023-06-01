@@ -8,6 +8,7 @@ import { useDeleteProductMutation, useGetProductsQuery } from './productApiSlice
 import { ShoppingCartCheckout } from '@mui/icons-material'
 import { useEffect, useState } from 'react'
 import { addToCart } from '../cart/cartSlice'
+import Snackbar from '@mui/material/Snackbar'
 //import { selectCurrentUser } from '../auth/authSlice'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { selectCurrentUserToken } from '../auth/authSlice'
@@ -24,8 +25,8 @@ const SingleProductPage = () => {
   const theme = useTheme()
   const { isAdmin, isManager } = useAuth()
   const dispatch = useAppDispatch()
-  const [deleteProduct] = useDeleteProductMutation()
-  const [deleteError, setDeleteError] = useState(false)
+  const [deleteProduct, { isSuccess: deleteSuccess }] = useDeleteProductMutation()
+  const [deleteError, setDeleteError] = useState('')
   const { product, isLoading, error } = useGetProductsQuery(
     {},
     {
@@ -36,6 +37,7 @@ const SingleProductPage = () => {
       })
     }
   )
+
   const handleShowPopUp = () => {
     setShowPopUp(true)
   }
@@ -57,12 +59,23 @@ const SingleProductPage = () => {
   }
 
   const handleDelete = async () => {
-    try {
-      await deleteProduct({ id: productId! }).unwrap()
-      navigate('/')
-    } catch (error) {
-      setDeleteError(true)
-    }
+    await deleteProduct({ id: productId! })
+      .unwrap()
+      .then((payload) => {
+        setShowPopUp(true)
+      })
+      .catch((err) => {
+        if (err.status === 400) {
+          setDeleteError(`Bad request::check user details`)
+        }
+        if (err.status === 401) {
+          setDeleteError('Unauthorized')
+        }
+        if (err.status?.data) {
+          setDeleteError(`${err.data.httpStatus}::${err.data.message}`)
+        }
+      })
+    navigate('/', { replace: true })
   }
   const handleAddToCart = () => {
     if (product) {
@@ -88,7 +101,8 @@ const SingleProductPage = () => {
         marginRight: 0,
         marginLeft: 0
       }}>
-      {showPopUp && <Alert> Review added</Alert>}
+      {showPopUp && <Alert> Review added 😇</Alert>}
+      {deleteError && <Alert>{deleteError}</Alert>}
       <SmallScreenAppBar />
       <div
         style={{
