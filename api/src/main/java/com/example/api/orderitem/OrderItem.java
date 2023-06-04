@@ -4,15 +4,13 @@ import com.example.api.order.Order;
 import com.example.api.product.Product;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
+import lombok.*;
 @Entity
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
+@Getter
+@Setter
 @Builder
 public class OrderItem {
     @Id

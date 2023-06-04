@@ -6,7 +6,6 @@ import FormControl from '@mui/material/FormControl'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import PendingActionsIcon from '@mui/icons-material/PendingActions'
 
-
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import RequestQuoteIcon from '@mui/icons-material/RequestQuote'
 import Avatar from '@mui/material/Avatar'
@@ -65,7 +64,7 @@ const EnhancedTableRow = ({
       </TableCell>
       <TableCell>
         <FormControl fullWidth>
-          <InputLabel id="status" color="secondary">
+          <InputLabel id="status-select" color="secondary">
             Order Status
           </InputLabel>
           <Select
@@ -81,6 +80,7 @@ const EnhancedTableRow = ({
           </Select>
         </FormControl>
       </TableCell>
+      <TableCell>€207.85</TableCell>
     </TableRow>
   )
 }

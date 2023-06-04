@@ -2,31 +2,45 @@ package com.example.api.address;
 
 import com.example.api.order.Order;
 import com.example.api.user.User;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.util.List;
+import lombok.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class Address {
     @Id
     @GeneratedValue
     private Long id;
-    private String unitnumber;
+    private String name;
+    private String unitNumber;
     private String phone;
     private String street;
     private String city;
-    private String zipcode;
+    private String zipCode;
 
-    @ManyToMany(mappedBy = "addresses")
-    private List<User> users;
+    private boolean isDefault;
     @OneToMany(mappedBy = "address")
-    private List<Order> orders;
+    @ToString.Exclude
+    @JsonBackReference
+    private Set<Order> orders;
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
+    @JoinTable(
+            name = "user_address",
+            joinColumns = @JoinColumn(name = "address_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id")
+    )
+    @ToString.Exclude
+    @JsonBackReference
+    private Set<User> users = new HashSet<>();
+
 }

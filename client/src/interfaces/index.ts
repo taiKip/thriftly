@@ -5,8 +5,8 @@ export interface IReview {
   rating: number
   title: string
   comment: string
-  createdAt: string
-  username: string
+  createdAt?: string
+  username?: string
 }
 export interface IProduct {
   id: number
@@ -70,7 +70,7 @@ export interface IOrderItem {
 
 export interface IOrder {
   orderItems: IOrderItem[]
-  addressId: number
+  addressId: number | null
 }
 export interface ITableProps {
   title: string
@@ -92,4 +92,14 @@ export interface IError {
 export interface ErrorDetail {
   httpStatus: string
   message: string
+}
+export interface IAddress {
+  id: number
+  name: string
+  city: string
+  street: string
+  unitNumber: number
+  zipCode: string
+  phone: string
+  isDefault: boolean
 }

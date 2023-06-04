@@ -1,9 +1,17 @@
-import { Navigate, Outlet } from 'react-router-dom'
+import { Navigate, Outlet, useLocation } from 'react-router-dom'
+import { selectCurrentUserToken } from '../features/auth/authSlice'
+import { useAppSelector } from '../app/hooks'
+import useAuth from '../utils/hooks/useAuth'
 
 const RequireAuth = () => {
-  const user = true //useAppSelector(selectCurrentUser)
+  const location = useLocation()
+  const { isAdmin, isManager, isUser } = useAuth()
 
-  return user ? <Outlet /> : <Navigate to={'/'} replace />
+  return isAdmin || isManager || isUser ? (
+    <Outlet />
+  ) : (
+    <Navigate to={'/auth/register'} state={{ from: location }} replace />
+  )
 }
 
 export default RequireAuth

@@ -19,13 +19,14 @@ import {
   List,
   ListItem,
   Avatar,
-  ListItemText
+  ListItemText,
+  Stack
 } from '@mui/material'
-import { ArrowBack } from '@mui/icons-material'
+import { ArrowBack, Login } from '@mui/icons-material'
 import CartItem from './CartItem'
 import SignUp from '../auth/SignUpForm'
 import { resetCart } from './cartSlice'
-import { usePlaceOrderMutation } from '../orders/orderSlice'
+import { usePlaceOrderMutation } from '../orders/orderApiSlice'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { RootState } from '../../app/store'
 import { IOrder, IOrderItem } from '../../interfaces'
@@ -40,6 +41,7 @@ import useAuth from '../../utils/hooks/useAuth'
 const nav = ['PRODUCT DETAILS', 'QUANTITY', 'TOTAL', 'ACTION']
 export type cartPropsType = { anchorEl?: null | HTMLElement; handleClose?: () => void }
 const ShoppingCartPage = ({ anchorEl, handleClose }: cartPropsType) => {
+  const { isUser, isAdmin, isManager } = useAuth()
   const { theme } = UseTheme()
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
@@ -48,30 +50,19 @@ const ShoppingCartPage = ({ anchorEl, handleClose }: cartPropsType) => {
   const count = cartItems.length
   const { isBanned, name } = useAuth()
   const totalAmount = cartItems.map((item) => item.quantity * item.price)
-  const handleOrder = async () => {
-    if (!isBanned && name && count !== 0) {
-      const orderItems: IOrderItem[] = []
-      cartItems.map((item) => orderItems.push({ productId: +item.id, quantity: item.quantity }))
-      const order: IOrder = {
-        orderItems: [...orderItems],
-        addressId: 1
-      }
-      try {
-        await placeOrder(order).unwrap()
-      } catch (error) {
-        console.log(error)
-      } finally {
-        dispatch(resetCart())
-        navigate('/')
-      }
+  const handleCheckOut = () => {
+    if (isAdmin || isManager || isUser) {
+      navigate('/orders')
+    } else {
+      navigate('/auth/register')
     }
   }
   return (
     <>
       <SmallScreenAppBar />
-      <Container sx={{ paddingTop: 16, overflowX: 'hidden' }}>
+      <Container sx={{ paddingTop: 10, overflowX: 'hidden' }}>
         <Box padding={2}>
-          <Typography variant="h4" color={'white'} fontSize={'1.4em'} gap={2}>
+          <Typography variant="h4" color={'text.primary'} fontSize={'1.4em'} gap={2}>
             <span>Your Shopping Cart </span> <span>🛒</span>
           </Typography>
           <Typography sx={{ color: 'gray' }}>
@@ -113,27 +104,23 @@ const ShoppingCartPage = ({ anchorEl, handleClose }: cartPropsType) => {
             padding: 1,
             marginBottom: 1
           }}>
-          <Box display={'flex'} alignItems="flex-start" flexDirection={'column'} gap={2}>
-            <IconButton onClick={handleClose}>
-              <ArrowBack />
-            </IconButton>
+          <Box display={'flex'} gap={2} width={'80vw'} justifyContent={'space-around'}>
+            <Button
+              startIcon={<ArrowBack />}
+              onClick={handleClose}
+              color="secondary"
+              variant="text">
+              Continue Shopping
+            </Button>
 
-            <Typography variant="h6">Continue Shopping</Typography>
-            <Typography color="purple">Login to checkout</Typography>
+            <Button
+              endIcon={<Login />}
+              onClick={handleCheckOut}
+              color="secondary"
+              variant="outlined">
+              Checkout 🛍️
+            </Button>
           </Box>
-          {
-            //not user
-            <>
-              <SignUpButton handleCloseCart={handleClose} anchorEl={Boolean(anchorEl)} />
-            </>
-          }
-          <>
-            {cartItems.length < 0 && ( //not user
-              <Button variant="outlined" color="inherit" onClick={handleOrder}>
-                Checkout 🛍️
-              </Button>
-            )}
-          </>
         </Container>
       </Container>
     </>

@@ -26,8 +26,8 @@ const FooterMenu = () => {
       text: 'Blog',
       icon: <RssFeedOutlined />,
       route: '/blog',
-      title: 'Cart',
-      description: 'a basket full of goodness'
+      title: 'Blog',
+      description: 'Read stories from our experts'
     },
     {
       text: 'Cart',

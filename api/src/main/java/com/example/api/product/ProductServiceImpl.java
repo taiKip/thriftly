@@ -103,18 +103,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Map<String, Object> searchProductsByName(String query, int pageSize, int pageNumber) {
-        Pageable pageable = PageRequest.of(pageSize, pageNumber);
+    public List<Product> searchProductsByName(String query) {
 
 
-        Page<Product> products = productRepository.searchProductsByName(query, pageable);
 
-        if (products.hasContent()) {
-            TitlePageDto<Product> titlePageDto = new TitlePageDto<>("products", products);
-            return pageResponseDtoMapper.apply(titlePageDto);
-        } else {
-            return new HashMap<>();
-        }
+
+
+        return productRepository.searchProductsByName(query);
     }
 
     /**

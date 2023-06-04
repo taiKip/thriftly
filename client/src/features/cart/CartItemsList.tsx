@@ -19,46 +19,38 @@ import { ArrowBack } from '@mui/icons-material'
 import CartItem from './CartItem'
 import SignUp from '../auth/SignUpForm'
 import { resetCart } from './cartSlice'
-import { usePlaceOrderMutation } from '../orders/orderSlice'
+import { usePlaceOrderMutation } from '../orders/orderApiSlice'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { RootState } from '../../app/store'
 import { IOrder, IOrderItem } from '../../interfaces'
 import SignUpButton from '../../components/SignUpButton'
 import { selectCurrentUserToken } from '../auth/authSlice'
 import useAuth from '../../utils/hooks/useAuth'
+import { setPageInfo } from '../page/pageInfoSlice'
+import { useNavigate } from 'react-router-dom'
+import { replace } from 'formik'
 
 export type cartPropsType = { anchorEl: null | HTMLElement; handleClose: () => void }
 const nav = ['PRODUCT DETAILS', 'QUANTITY', 'TOTAL', 'ACTION']
 const CartItemsList = ({ anchorEl, handleClose }: cartPropsType) => {
   const token = useAppSelector(selectCurrentUserToken)
+  const navigate = useNavigate()
   const dispatch = useAppDispatch()
   //const user = useAppSelector(selectCurrentUser)
   const [placeOrder, { data }] = usePlaceOrderMutation()
   const cartItems = useAppSelector((state: RootState) => state.cart.cartItems)
   const count = cartItems.length
 
-  const handleOrder = async () => {
-    if (token && count !== 0) {
-      ///user
-      // eslint-disable-next-line prettier/prettier, prefer-const
-      let orderItems: IOrderItem[] = []
-      cartItems.map((item) => orderItems.push({ productId: +item.id, quantity: +item.quantity }))
-      const order: IOrder = {
-        orderItems: [...orderItems],
-        addressId: 1
-      }
+  const handleOrder = () => {
+    dispatch(
+      setPageInfo({
+        name: 'Checkout',
+        description: 'fill in your payment details to complete transaction'
+      })
+    )
 
-      try {
-        console.log(order)
-        const result = await placeOrder(order).unwrap()
-        console.log('response::', result)
-      } catch (error) {
-        console.log(error)
-      } finally {
-        dispatch(resetCart())
-        handleClose()
-      }
-    }
+    navigate('/orders')
+    handleClose()
   }
   return (
     <>
@@ -108,7 +100,7 @@ const CartItemsList = ({ anchorEl, handleClose }: cartPropsType) => {
           <TableBody>
             {cartItems.map((item) => (
               <CartItem
-                image={item.image}
+                imageUrl={item.imageUrl}
                 quantity={item.quantity}
                 price={item.price}
                 name={item.name}
@@ -143,12 +135,11 @@ const CartItemsList = ({ anchorEl, handleClose }: cartPropsType) => {
             </>
           )}
           <>
-            {cartItems.length > 0 &&
-              token && ( //not user
-                <Button variant="outlined" color="inherit" onClick={handleOrder}>
-                  Checkout 🛍️
-                </Button>
-              )}
+            {cartItems.length > 0 && token && (
+              <Button variant="outlined" color="inherit" onClick={handleOrder}>
+                Checkout 🛍️
+              </Button>
+            )}
           </>
         </Container>
       </Menu>

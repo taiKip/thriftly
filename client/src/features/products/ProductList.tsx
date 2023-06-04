@@ -37,8 +37,7 @@ const ProductList = () => {
       sortBy
     },
     {
-      refetchOnMountOrArgChange: true,
-      refetchOnFocus: true
+      pollingInterval: 8000
     }
   )
 

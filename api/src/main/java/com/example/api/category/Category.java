@@ -1,21 +1,22 @@
 package com.example.api.category;
 
 import com.example.api.product.Product;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.Hibernate;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
+
 @Entity
-@Data
+@Getter
+@Setter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
+@ToString
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,7 +25,8 @@ public class Category {
     private String image;
     private String description;
 
-    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY,cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "category")
+    @ToString.Exclude
     private Set<Product> products = new HashSet<>();
 
 }

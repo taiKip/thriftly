@@ -3,7 +3,7 @@ import { IError } from '../../interfaces'
 import Snackbar from '@mui/material/Snackbar'
 import Alert from '@mui/material/Alert'
 
-const ErrorHandler = ({ error }: { error: IError}) => {
+const ErrorHandler = ({ error }: { error: IError }) => {
   return (
     <Snackbar
       open={Boolean(error)}

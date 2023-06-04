@@ -4,22 +4,20 @@ import com.example.api.category.Category;
 import com.example.api.entity.BaseEntity;
 import com.example.api.orderitem.OrderItem;
 import com.example.api.review.Review;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
-
 @Entity
-@Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
+@Getter
+@Setter
+@Builder
 public class Product extends BaseEntity {
     @Id
     @GeneratedValue
@@ -32,10 +30,15 @@ public class Product extends BaseEntity {
     private Double averageRating;
     @ManyToOne
     @JoinColumn(name = "category_id")
-    @JsonIgnore
+    @JsonBackReference
+    @ToString.Exclude
     private Category category;
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ToString.Exclude
+    @JsonBackReference
     private List<OrderItem> cartItems;
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Review> reviews = new ArrayList<>();
+    @ToString.Exclude
+    private List<Review> reviews;
+
 }

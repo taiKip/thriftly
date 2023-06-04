@@ -48,4 +48,5 @@ public class UserController {
         return ResponseEntity.ok(userService.searchUsersByName(query, pageNo, pageSize));
 
     }
+
 }

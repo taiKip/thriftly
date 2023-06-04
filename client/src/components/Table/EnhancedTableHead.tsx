@@ -10,7 +10,7 @@ import Button from '@mui/material/Button'
 import { useState } from 'react'
 const EnhancedTableHead = () => {
   const [city, setCity] = useState('')
-  const [period, setPeriod] = useState('')
+  const [sortBy, setSortBy] = useState('')
 
   return (
     <Box
@@ -24,23 +24,23 @@ const EnhancedTableHead = () => {
       </Stack>
 
       <Stack direction="row" spacing={2} minWidth={250}>
-        <FormControl fullWidth>
-          <InputLabel id="period" color="secondary">
-            Period
+        <FormControl fullWidth sx={{ minWidth: '150px' }}>
+          <InputLabel id="order-select" color="secondary">
+            SortBy
           </InputLabel>
           <Select
-            labelId="period-select"
-            id="period-select"
-            value={period}
-            label="Period"
-            onChange={(e) => setPeriod(e.target.value)}
+            labelId="order-select"
+            id="order-select"
+            value={sortBy}
+            label="SortBy"
+            onChange={(e) => setSortBy(e.target.value)}
             color="secondary">
-            <MenuItem value={'Normal'}>Monthly</MenuItem>
-            <MenuItem value={'Emergency'}>Weekly</MenuItem>
-            <MenuItem value={'Emergency'}>Daily</MenuItem>
+            <MenuItem value={'Pending'}>Pending</MenuItem>
+            <MenuItem value={'Confirmed'}>Confirmed</MenuItem>
+            <MenuItem value={'Fullfilled'}>Fullfilled</MenuItem>
           </Select>
         </FormControl>
-        <Button variant="contained">Confirm Status</Button>
+        <Button variant="contained">Confirm Selected changes</Button>
       </Stack>
     </Box>
   )

@@ -2,18 +2,16 @@ package com.example.api.orderstatus;
 
 import com.example.api.order.Order;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 public class OrderStatus {
     @Id
     @GeneratedValue
@@ -21,5 +19,6 @@ public class OrderStatus {
 
     private String status;
     @OneToMany(mappedBy = "orderStatus")
+    @ToString.Exclude
     private List<Order> orders;
 }

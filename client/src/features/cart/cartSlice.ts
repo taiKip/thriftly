@@ -49,7 +49,6 @@ const cartSlice = createSlice({
     },
     resetCart: (state) => {
       state.cartItems = []
-      console.log('reset cart')
       localStorage.removeItem('cartItems')
     }
   }
@@ -57,4 +56,5 @@ const cartSlice = createSlice({
 export const { addToCart, incrementQuantity, decrementQuantity, removeItem, resetCart } =
   cartSlice.actions
 export const selectAllOrders = (state: RootState) => state.cart.cartItems
+
 export default cartSlice.reducer

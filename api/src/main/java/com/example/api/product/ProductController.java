@@ -118,20 +118,15 @@ public class ProductController {
      * @return
      */
     @GetMapping("/search")
-    public ResponseEntity<Map<String, Object>> searchProductsByName(
-            @RequestParam(value = "name") String query,
-            @RequestParam(value = "pageNo", defaultValue
-                    = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
-            @RequestParam(value = "pageSize", defaultValue
-                    = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize) {
-        return ResponseEntity.ok(productService.searchProductsByName(query, pageNo, pageSize));
+    public ResponseEntity<List<Product>> searchProductsByName(
+            @RequestParam(value = "name") String query) {
+        return ResponseEntity.ok(productService.searchProductsByName(query));
     }
 
 
 
 
     @PostMapping("/{productId}/reviews")
-    @Hidden
     public ResponseEntity<String> addReview(@PathVariable("productId") Long productId, @RequestBody @Valid ReviewDto reviewDto) throws ProductNotFoundException {
         return ResponseEntity.ok(reviewService.addReview(productId, reviewDto));
     }

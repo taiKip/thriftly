@@ -8,25 +8,31 @@ import { useDeleteProductMutation, useGetProductsQuery } from './productApiSlice
 import { ShoppingCartCheckout } from '@mui/icons-material'
 import { useEffect, useState } from 'react'
 import { addToCart } from '../cart/cartSlice'
-import Snackbar from '@mui/material/Snackbar'
-//import { selectCurrentUser } from '../auth/authSlice'
+
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { selectCurrentUserToken } from '../auth/authSlice'
 import AddReviewForm from './AddReviewForm'
 import useAuth from '../../utils/hooks/useAuth'
 import SmallScreenAppBar from '../../components/SmallScreenAppBar'
+import { useGetReviewsByIdQuery, useLazyGetReviewsByIdQuery } from '../review/reviewApiSlice'
+import ReviewList from '../review/ReviewList'
+import { IReview } from '../../interfaces'
 
 const SingleProductPage = () => {
   const navigate = useNavigate()
   const { productId } = useParams()
   const token = useAppSelector(selectCurrentUserToken)
+  const dispatch = useAppDispatch()
   const [openReviewForm, setOpenReviewForm] = useState(false)
   const [showPopUp, setShowPopUp] = useState(false)
+  const [showReviews, setShowReviews] = useState(false)
+  const [outOfStock, setOutOfStock] = useState(false)
   const theme = useTheme()
   const { isAdmin, isManager } = useAuth()
-  const dispatch = useAppDispatch()
   const [deleteProduct, { isSuccess: deleteSuccess }] = useDeleteProductMutation()
   const [deleteError, setDeleteError] = useState('')
+  const [getReviews, { isLoading: loadingReviews, isError: reviewsError, currentData }] =
+    useLazyGetReviewsByIdQuery()
   const { product, isLoading, error } = useGetProductsQuery(
     {},
     {
@@ -41,6 +47,18 @@ const SingleProductPage = () => {
   const handleShowPopUp = () => {
     setShowPopUp(true)
   }
+  const handleShowReviews = async () => {
+    const id = +productId!
+
+    await getReviews(id).unwrap()
+
+    setShowReviews((prev) => !prev)
+  }
+  useEffect(() => {
+    if (product && product?.stock < 1) {
+      setOutOfStock(true)
+    }
+  }, [product])
   useEffect(() => {
     if (!showPopUp) {
       return
@@ -80,6 +98,7 @@ const SingleProductPage = () => {
   const handleAddToCart = () => {
     if (product) {
       dispatch(addToCart({ ...product, quantity: 1 }))
+      console.log(product)
     }
   }
   const handleUpdate = () => {
@@ -88,6 +107,10 @@ const SingleProductPage = () => {
   const handleToggleReview = () => {
     setOpenReviewForm((prev) => !prev)
   }
+  const handleToggleReviewList = () => {
+    setShowReviews((prev) => !prev)
+  }
+
   return (
     <Container
       component={'section'}
@@ -130,8 +153,14 @@ const SingleProductPage = () => {
           <Typography color={'green'} component={'p'} fontSize={'inherit'} fontWeight={'bold'}>
             {'€' + product?.price}
           </Typography>
-
-          <Button sx={{ gap: '3px' }}>
+          <ReviewList
+            open={showReviews}
+            toggleReview={handleToggleReviewList}
+            isError={reviewsError}
+            isLoading={loadingReviews}
+            reviews={currentData ?? []}
+          />
+          <Button sx={{ gap: '3px' }} onClick={handleShowReviews}>
             <Rating
               name="rating"
               defaultValue={2.5}
@@ -141,7 +170,7 @@ const SingleProductPage = () => {
               value={product?.averageRating || 5}
             />
 
-            <Typography>({product?.reviews?.length})</Typography>
+            <Typography color="text.primary">({product?.reviews?.length})</Typography>
           </Button>
 
           <Button
@@ -162,13 +191,16 @@ const SingleProductPage = () => {
         </Stack>
       </div>
       <Stack display={'flex'} gap={1} width="100%" marginBottom={8}>
-        <Button
-          variant="outlined"
-          color="success"
-          endIcon={<ShoppingCartCheckout />}
-          onClick={handleAddToCart}>
-          Add to cart
-        </Button>
+        {outOfStock && <Typography color={'textPrimary'}>out of stock</Typography>}
+        {!outOfStock && (
+          <Button
+            variant="outlined"
+            color="success"
+            endIcon={<ShoppingCartCheckout />}
+            onClick={handleAddToCart}>
+            Add to cart
+          </Button>
+        )}
         {token &&
           (isAdmin || isManager) && ( //user exists ..todo
             <>

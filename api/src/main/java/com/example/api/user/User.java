@@ -2,15 +2,12 @@ package com.example.api.user;
 
 import com.example.api.address.Address;
 import com.example.api.blog.Blog;
-import com.example.api.cart.Cart;
 import com.example.api.order.Order;
 import com.example.api.token.Token;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -21,9 +18,9 @@ import java.util.Set;
 @Entity
 @Table(name = "_user")
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,22 +34,19 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
     @OneToMany(mappedBy = "user")
+    @ToString.Exclude
     private List<Token> tokens;
     @OneToMany(mappedBy = "user")
-    @JsonIgnore
+    @JsonBackReference
+    @ToString.Exclude
     private List<Order> orders;
+
     @OneToMany(mappedBy = "user")
-    @JsonIgnore
-    private Set<Cart> carts;
-    @OneToMany(mappedBy = "user")
-    @JsonIgnore
+    @JsonBackReference
+    @ToString.Exclude
     private Set<Blog> blogs;
-    @ManyToMany
-    @JoinTable(
-            name = "user_address",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "address_id", referencedColumnName = "id")
-    )
+    @ManyToMany(mappedBy = "users")
+    @ToString.Exclude
     private Set<Address> addresses;
 
     @Override

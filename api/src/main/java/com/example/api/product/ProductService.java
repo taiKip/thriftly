@@ -18,7 +18,7 @@ public interface ProductService {
     Product findProductById(Long productId) throws ProductNotFoundException;
 
     String deleteProductById(Long productId);
-     Map<String,Object> searchProductsByName(String query, int pageSize, int pageNumber);
+     List<Product> searchProductsByName(String query);
 
     Map<String,Object> fetchProducts(int pageNumber, int pageSize, String sortDir,String sortBy,Long categoryId);
 

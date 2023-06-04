@@ -7,6 +7,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -79,5 +80,12 @@ public class ReviewServiceImpl implements ReviewService{
     @Override
     public Double averageReview(Long productId) {
         return null;
+    }
+
+    @Override
+    public List<Review> getReviewsByProductId(Long productId) throws ProductNotFoundException {
+        Product product = productRepository.findById(productId).orElseThrow(()->new ProductNotFoundException("Product not found"));
+
+        return reviewRepository.findByProductId(productId);
     }
 }

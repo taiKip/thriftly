@@ -15,7 +15,7 @@ import java.util.Optional;
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query(value = "SELECT * FROM product p WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', ?1,'%'))", nativeQuery = true)
-    Page<Product> searchProductsByName(String query, Pageable pageable);
+    List<Product> searchProductsByName(String query);
 
     Optional<Product> findProductByNameIgnoreCase(String name);
 

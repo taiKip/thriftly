@@ -66,8 +66,10 @@ const Login = () => {
           if (err.status === 400) {
             setError(`Bad request::check user details`)
           }
-          if (err.status === 401) {
-            setError('Unauthorized')
+          if (err.status === 403) {
+            setError('User email not found,pleas sign in')
+
+            navigate('/auth/register')
           }
           if (err.status?.data) {
             setError(`${err.data.httpStatus}::${err.data.message}`)

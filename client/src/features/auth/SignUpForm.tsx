@@ -1,17 +1,23 @@
 import React, { FormEvent, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Alert, FormControlLabel, Stack, Toolbar, Typography } from '@mui/material'
+import Alert from '@mui/material/Alert'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import Container from '@mui/material/Container'
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight'
 import TextField from '@mui/material/TextField'
+import Snackbar from '@mui/material/Snackbar'
 import SmallScreenAppBar from '../../components/SmallScreenAppBar'
+
 import { useAppDispatch } from '../../app/hooks'
 import { useRegisterUserMutation } from './authApiSlice'
 import { EMAIL_REGEX, PWD_REGEX } from '../../utils/AppConstants'
 import { setCredentials } from './authSlice'
 import { inputFormStyle } from '../../styles'
 import GoogleLoginButton from '../../components/GoogleLoginButton'
+import { setPageInfo } from '../page/pageInfoSlice'
+import ErrorAlert from '../../components/error/ErrorAlert'
 
 const field = {
   marginTop: '20px',
@@ -21,7 +27,7 @@ const field = {
 
 const SignUp = () => {
   const navigate = useNavigate()
-  const [registerUser, { isLoading }] = useRegisterUserMutation()
+  const [registerUser, { isLoading, isSuccess, data }] = useRegisterUserMutation()
   const dispatch = useAppDispatch()
 
   /**
@@ -66,7 +72,8 @@ const SignUp = () => {
     }
   }, [confirmPassword])
 
-  const canSave = [email, password, userName].every(Boolean) && confirmPassword === password
+  const canSave =
+    [email, password, userName].every(Boolean) && confirmPassword === password && !isLoading
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
@@ -80,6 +87,12 @@ const SignUp = () => {
         .unwrap()
         .then((payload) => {
           dispatch(setCredentials(payload))
+          dispatch(setPageInfo({ name: 'Address details', description: 'Almost theres' }))
+          setEmail('')
+          setUserName('')
+          setPassword('')
+          setConfirmPassword('')
+          navigate('/details')
         })
         .catch((err) => {
           if (err.status) {
@@ -89,20 +102,24 @@ const SignUp = () => {
     } else {
       return
     }
-    setEmail('')
-    setPassword('')
-    setConfirmPassword('')
   }
 
   return (
     <>
       <SmallScreenAppBar />
       <Container sx={inputFormStyle}>
-        {Boolean(error) && (
-          <Alert severity="error" aria-live="assertive">
-            {error}
+        <Snackbar
+          open={isSuccess}
+          autoHideDuration={1500}
+          anchorOrigin={{
+            horizontal: 'right',
+            vertical: 'top'
+          }}>
+          <Alert severity="success" sx={{ width: '100%' }}>
+            Sign up successfull 🎉
           </Alert>
-        )}
+        </Snackbar>
+        <ErrorAlert error={error} />
         <Typography variant="h6" component="h2" color="textSecondary" gutterBottom>
           Sign up
         </Typography>

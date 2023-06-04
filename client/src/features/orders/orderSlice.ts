@@ -1,21 +1,32 @@
-import { IOrder } from '../../interfaces'
-import { apiSlice } from './../api/apiSlice'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-export const extendedOrdersApiSlice = apiSlice.injectEndpoints({
-  endpoints: (builder) => ({
-    getOrders: builder.query<IOrder[], void>({
-      query: () => '/orders',
-      providesTags: ['Orders']
-    }),
-    placeOrder: builder.mutation<IOrder, Partial<IOrder>>({
-      query: (order: IOrder) => ({
-        url: '/orders',
-        method: 'POST',
-        body: JSON.stringify(order)
-      }),
-      invalidatesTags: ['Orders']
-    })
-  })
+import { IOrder, IOrderItem } from '../../interfaces'
+import { RootState } from '../../app/store'
+
+const initialOrderState: IOrder = {
+  orderItems: [],
+  addressId: null
+}
+const orderSlice = createSlice({
+  name: 'order',
+  initialState: initialOrderState,
+  reducers: {
+    addOrderAddress: (state, action: PayloadAction<Partial<IOrder>>) => {
+      const addressId = action.payload.addressId as number
+      state.addressId = addressId
+    },
+    addOrderItems: (state, action: PayloadAction<Partial<IOrder>>) => {
+      const orderItems = action.payload.orderItems as IOrderItem[]
+      state.orderItems = orderItems
+    },
+    resetOrderItems: (state) => {
+      state = initialOrderState
+      return state
+    }
+  }
 })
 
-export const { useGetOrdersQuery, usePlaceOrderMutation } = extendedOrdersApiSlice
+export const { addOrderAddress, addOrderItems, resetOrderItems } = orderSlice.actions
+export const selectOrderAddress = (state: RootState) => state.order.addressId
+export const selectOrderDetails = (state: RootState) => state.order
+export default orderSlice.reducer

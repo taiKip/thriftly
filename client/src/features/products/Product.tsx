@@ -35,7 +35,7 @@ const Product = ({ id, imageUrl, name, price, stock }: IProduct) => {
           loading="lazy"
           sx={{ minHeight: { xs: 150, sm: 200 } }}
         />
-        <CardContent sx={{ padding: 0.3 }}>
+        <CardContent sx={{ padding: 0.5 }}>
           <Typography
             gutterBottom
             component="div"
@@ -47,10 +47,15 @@ const Product = ({ id, imageUrl, name, price, stock }: IProduct) => {
         </CardContent>
       </CardActionArea>
       <CardActions sx={{ borderTop: 1, borderTopStyle: 'dashed', borderTopColor: 'gray' }}>
-        <Typography>€{price.toFixed(2)}</Typography>
-        <IconButton sx={{ ml: 'auto', color: 'green' }} onClick={() => handleAddToCart()}>
-          <AddShoppingCartOutlinedIcon />
-        </IconButton>
+        {stock < 1 && <Typography color={'textPrimary'}>Out of stock</Typography>}
+        {stock > 0 && (
+          <>
+            <Typography>€{price.toFixed(2)}</Typography>
+            <IconButton sx={{ ml: 'auto', color: 'green' }} onClick={() => handleAddToCart()}>
+              <AddShoppingCartOutlinedIcon />
+            </IconButton>
+          </>
+        )}
         <NavLink to={`/products/${id}`}>
           <IconButton>
             <ArrowForward />

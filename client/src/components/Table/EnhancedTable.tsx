@@ -10,7 +10,7 @@ import TableCell from '@mui/material/TableCell'
 import EnhancedTableHead from './EnhancedTableHead'
 import EnhancedTableRow, { tableRowProps } from './EnhancedTableRow'
 
-const tableNav = ['Date', 'Customer', 'Status']
+const tableNav = ['Date', 'Customer', 'Status', 'Total']
 export const tableItems = [
   {
     firstName: 'John',
@@ -59,7 +59,7 @@ const EnhancedTable = () => {
               <Checkbox
                 color={theme.palette.mode === 'dark' ? 'primary' : 'secondary'}
                 inputProps={{
-                  'aria-label': 'select all desserts'
+                  'aria-label': 'select all orders'
                 }}
               />
             </TableCell>

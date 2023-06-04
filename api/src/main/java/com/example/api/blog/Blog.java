@@ -1,18 +1,17 @@
 package com.example.api.blog;
 
 import com.example.api.entity.BaseEntity;
-import com.example.api.tag.Tag;
 import com.example.api.user.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import java.util.Set;
 
-@Data
+
+
+
 @Entity
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,6 +28,5 @@ public class Blog extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-    @OneToMany(mappedBy = "blog")
-    private Set<Tag> tags;
+
 }

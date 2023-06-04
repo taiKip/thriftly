@@ -160,7 +160,7 @@ const AddProductForm = () => {
 
           <FormControl fullWidth sx={{ paddingBottom: 2 }}>
             <InputLabel id="categoryId-select" color="secondary">
-              CategoryId
+              Category
             </InputLabel>
             <Select
               labelId="categoryId-select-label"

@@ -28,7 +28,7 @@ const useAuth = () => {
         isManager = true
         break
     }
-    return { isAdmin, isManager, isBanned, isUser, name, exp }
+    return { isAdmin, isManager, isBanned, isUser, name, exp, roles: [isAdmin, isManager, isUser] }
   }
   return { username: '', isAdmin, isUser, isManager }
 }

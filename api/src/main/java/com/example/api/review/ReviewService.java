@@ -5,6 +5,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public interface ReviewService {
 
@@ -15,4 +17,6 @@ public interface ReviewService {
 
     String deleteReview(Long reviewId) throws ReviewNotFoundException;
     Double averageReview(Long productId);
+
+    List<Review> getReviewsByProductId(Long productId) throws ProductNotFoundException;
 }

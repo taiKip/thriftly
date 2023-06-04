@@ -5,7 +5,7 @@ import { useAppDispatch } from '../../app/hooks'
 import { DeleteOutline } from '@mui/icons-material'
 const textStyles = { xs: '0.6em', sm: '1em' }
 const buttonStyles = { xs: 'small', sm: 'medium' }
-const CartItem = ({ image, quantity, price, name, id, stock }: cartItemType) => {
+const CartItem = ({ imageUrl, quantity, price, name, id, stock }: cartItemType) => {
   const dispatch = useAppDispatch()
   const handleIncrement = () => {
     if (quantity <= stock) {
@@ -35,7 +35,7 @@ const CartItem = ({ image, quantity, price, name, id, stock }: cartItemType) => 
               width: { xs: 30, sm: 40 },
               borderRadius: 1
             }}
-            image={image ?? ' '}
+            image={imageUrl ?? ' '}
           />
 
           <Typography sx={{ fontSize: textStyles }}>{name}</Typography>
