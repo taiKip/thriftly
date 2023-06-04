@@ -138,7 +138,7 @@ public class ProductServiceImpl implements ProductService {
 
 
         if (products.hasContent()) {
-            TitlePageDto<Product> titlePageDto = new TitlePageDto<>("products", products);
+            TitlePageDto<Product> titlePageDto = new TitlePageDto<>("items", products);
             return pageResponseDtoMapper.apply(titlePageDto);
         } else {
             return new HashMap<>();

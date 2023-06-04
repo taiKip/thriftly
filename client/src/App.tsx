@@ -8,7 +8,6 @@ import HomePage from './pages/HomePage'
 import SingleProductPage from './features/products/SingleProductPage'
 import UseTheme from './utils/hooks/UseTheme'
 import AddProductForm from './features/products/AddProductForm'
-import UsersList from './features/users/UsersList'
 import UpdateProductForm from './features/products/UpdateProductForm'
 import Dashboard from './pages/Dashboard'
 import RequireAuth from './components/RequireAuth'
@@ -22,6 +21,7 @@ import ProductList from './features/products/ProductList'
 import OrderPage from './features/orders/OrderPage'
 import NewUserAddress from './features/address/NewUserAddress'
 import BlogPage from './features/blog/BlogPage'
+import UsersPage from './features/users/UsersPage'
 
 export const ThemeContext = createContext({
   toggleColorMode: () => {
@@ -62,7 +62,7 @@ const App = () => {
                   <Route path="create" element={<AddProductForm />} />
                 </Route>
                 <Route path="users">
-                  <Route index element={<UsersList />} />
+                  <Route index element={<UsersPage />} />
                   <Route path=":userId" element={<SingleProductPage />} />
                   <Route path="create" element={<AddProductForm />} />
                 </Route>

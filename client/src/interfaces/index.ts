@@ -1,5 +1,6 @@
 import { cartItemType } from '../features/cart/cartSlice'
 import { orderStatusType } from '../types'
+import { sortDirectionType } from '../features/types'
 export interface IReview {
   id: number
   rating: number
@@ -34,10 +35,13 @@ export interface ISortConfig<T> {
 
 //lower case because of database
 export interface IUser {
+  id: number
   name: string
   email: string
   password: string
   role: string
+  status: string
+  banned: boolean
 }
 
 export interface IAuthState {
@@ -55,7 +59,7 @@ export interface IPage<T> {
   currentPage: number
   hasPreviousPage: boolean
   nextPage: boolean
-  products: T[]
+  items: T[]
   totalItems: number
   totalPages: number
 }
@@ -102,4 +106,11 @@ export interface IAddress {
   zipCode: string
   phone: string
   isDefault: boolean
+}
+export interface IQuery {
+  categoryId?: number
+  pageNo?: number
+  pageSize?: number
+  sortDir?: sortDirectionType
+  sortBy?: string
 }

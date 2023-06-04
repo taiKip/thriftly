@@ -1,6 +1,7 @@
 package com.example.api.token;
 
 import com.example.api.user.User;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,5 +22,6 @@ public class Token {
     private boolean revoked;
     @ManyToOne
     @JoinColumn(name="user_id")
+    @JsonBackReference
     private User user;
 }

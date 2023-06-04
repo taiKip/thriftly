@@ -36,21 +36,27 @@ public class User implements UserDetails {
     private Role role;
     @OneToMany(mappedBy = "user")
     @ToString.Exclude
+    @JsonManagedReference
+    @JsonIgnore
     private List<Token> tokens;
     @OneToMany(mappedBy = "user")
     @JsonBackReference
     @ToString.Exclude
     @JsonManagedReference
+    @JsonIgnore
     private List<Order> orders;
 
     @OneToMany(mappedBy = "user")
-    @JsonBackReference
+    @JsonManagedReference
     @ToString.Exclude
+    @JsonIgnore
     private Set<Blog> blogs;
     @ManyToMany(mappedBy = "users")
     @ToString.Exclude
+    @JsonIgnore
     private Set<Address> addresses;
 
+    @JsonIgnore
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return role.getAuthorities();
@@ -61,6 +67,7 @@ public class User implements UserDetails {
         return email;
     }
 
+    @JsonIgnore
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -71,6 +78,7 @@ public class User implements UserDetails {
         return true;
     }
 
+    @JsonIgnore
     @Override
     public boolean isCredentialsNonExpired() {
         return true;

@@ -37,7 +37,7 @@ const SingleProductPage = () => {
     {},
     {
       selectFromResult: ({ data, isLoading, error }) => ({
-        product: data?.products?.find((item) => item.id == +productId!),
+        product: data?.items?.find((item) => item.id == +productId!),
         error,
         isLoading
       })

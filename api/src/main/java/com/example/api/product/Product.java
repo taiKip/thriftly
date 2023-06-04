@@ -6,6 +6,7 @@ import com.example.api.orderitem.OrderItem;
 import com.example.api.review.Review;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -38,8 +39,9 @@ public class Product extends BaseEntity {
     @JsonBackReference
     @JsonIgnore
     private List<OrderItem> cartItems;
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.LAZY)
     @ToString.Exclude
+    @JsonManagedReference
     private List<Review> reviews;
 
 }

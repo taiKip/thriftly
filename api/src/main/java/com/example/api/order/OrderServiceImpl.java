@@ -87,12 +87,13 @@ String username = SecurityContextHolder.getContext().getAuthentication().getName
     public Map<String, Object> fetchOrders(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo, pageSize,Sort.by(Sort.Direction.DESC,"createdAt"));
         Page<Order> orders = orderRepository.findAll(pageable);
+
         if (orders.hasContent()) {
             LOGGER.info(orders.toString());
             TitlePageDto<Order> titlePageDto = new TitlePageDto<>("orders", orders);
             return pageResponseDtoMapper.apply(titlePageDto);
         } else {
-            return (Map<String, Object>) orderRepository.findAll();
+            return new HashMap<>();
         }
     }
 }

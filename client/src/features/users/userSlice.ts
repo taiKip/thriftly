@@ -1,20 +1,10 @@
+import { IPage, IQuery, IUser } from '../../interfaces'
 import { apiSlice } from './../api/apiSlice'
 
-export type userType = {
-  id: number
-  firstname: string
-  lastname: string
-  email: string
-  isAdmin: boolean
-  isLoggedIn: boolean
-  isBanned: boolean
-  image: string
-  products: number[]
-}
 export const extendedUsersApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getUsers: builder.query<userType[], void>({
-      query: () => '/users',
+    getUsers: builder.query<IPage<IUser>, IQuery>({
+      query: ({ pageNo, pageSize }) => `/users?pageNo=${pageNo}&pageSize=${pageSize}`,
       providesTags: ['Users']
     })
   })

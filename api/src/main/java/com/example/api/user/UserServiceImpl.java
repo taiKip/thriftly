@@ -44,7 +44,7 @@ private final PageResponseDtoMapper pageResponseDtoMapper;
 
 
         if(users.hasContent()){
-            TitlePageDto<User> titlePageDto =new TitlePageDto<>("users",users);
+            TitlePageDto<User> titlePageDto =new TitlePageDto<>("items",users);
             return pageResponseDtoMapper.apply(titlePageDto);
         }
         else {
