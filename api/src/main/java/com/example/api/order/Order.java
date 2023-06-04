@@ -7,6 +7,7 @@ import com.example.api.orderstatus.OrderStatus;
 import com.example.api.user.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,18 +29,21 @@ public class Order extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @ToString.Exclude
+    @JsonBackReference
     private User user;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id")
     @ToString.Exclude
+    @JsonBackReference
     private Address address;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_status")
     @ToString.Exclude
+    @JsonBackReference
     private OrderStatus orderStatus;
     @OneToMany(mappedBy = "order",cascade = CascadeType.ALL)
     @ToString.Exclude
-    @JsonBackReference
+    @JsonManagedReference
     private List<OrderItem> orderItem;
 
 }

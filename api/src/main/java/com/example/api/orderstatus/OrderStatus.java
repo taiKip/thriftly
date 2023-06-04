@@ -1,6 +1,8 @@
 package com.example.api.orderstatus;
 
 import com.example.api.order.Order;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,5 +22,6 @@ public class OrderStatus {
     private String status;
     @OneToMany(mappedBy = "orderStatus")
     @ToString.Exclude
+    @JsonManagedReference
     private List<Order> orders;
 }

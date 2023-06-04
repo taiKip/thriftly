@@ -14,4 +14,6 @@ public interface OrderService {
     Map<String,Object> placeOrder(OrderDto orderDto) throws ProductNotFoundException, OrderStatusNotFoundException, AddressNotFoundException, OutOfStockException;
 
     String updateOrder(Long orderId, Long orderItem, OrderItemDto orderItemDto);
+
+    Map<String,Object> fetchOrders(int pageNo, int pageSize);
 }

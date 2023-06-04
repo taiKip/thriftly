@@ -3,6 +3,8 @@ package com.example.api.address;
 import com.example.api.order.Order;
 import com.example.api.user.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.HashSet;
@@ -28,7 +30,7 @@ public class Address {
     private boolean isDefault;
     @OneToMany(mappedBy = "address")
     @ToString.Exclude
-    @JsonBackReference
+    @JsonManagedReference
     private Set<Order> orders;
     @ManyToMany(cascade = {
             CascadeType.PERSIST,
@@ -40,7 +42,7 @@ public class Address {
             inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id")
     )
     @ToString.Exclude
-    @JsonBackReference
+    @JsonManagedReference
     private Set<User> users = new HashSet<>();
 
 }

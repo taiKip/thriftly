@@ -113,8 +113,6 @@ public class ProductController {
     /***
      *
      * @param query
-     * @param pageNo
-     * @param pageSize
      * @return
      */
     @GetMapping("/search")

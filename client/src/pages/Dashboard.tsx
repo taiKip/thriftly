@@ -21,6 +21,7 @@ import CardItem, { ICardProps } from '../components/CardItem'
 import BarChart from '../components/BarChart'
 import EnhancedTable from '../components/Table/EnhancedTable'
 import { Link } from 'react-router-dom'
+import { useGetOrdersQuery } from '../features/orders/orderApiSlice'
 
 const cardItems = [
   {
@@ -55,6 +56,8 @@ const Dashboard = () => {
   }
 
   const theme = useTheme()
+
+  const { data, isLoading, isSuccess } = useGetOrdersQuery()
   return (
     <Box>
       <Toolbar />

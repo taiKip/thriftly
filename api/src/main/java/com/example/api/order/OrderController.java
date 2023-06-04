@@ -5,6 +5,7 @@ import com.example.api.orderitem.OrderItemDto;
 import com.example.api.orderstatus.OrderStatusNotFoundException;
 import com.example.api.product.OutOfStockException;
 import com.example.api.product.ProductNotFoundException;
+import com.example.api.utils.AppConstants;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,10 +20,11 @@ import java.util.Map;
 @RestController
 @RequestMapping("api/v1/orders")
 @RequiredArgsConstructor
-@SecurityRequirement(name="bearerAuth")
-@Tag(name="Orders")
+@SecurityRequirement(name = "bearerAuth")
+@Tag(name = "Orders")
 public class OrderController {
     private final OrderService orderService;
+
     @Operation(
             description = "Post endpoint for placing an order",
             summary = "Place an order"
@@ -31,13 +33,24 @@ public class OrderController {
     public ResponseEntity<Map<String, Object>> placeOrder(@RequestBody @Valid OrderDto orderDto) throws ProductNotFoundException,
             OrderStatusNotFoundException, AddressNotFoundException, OutOfStockException {
 
-        return  ResponseEntity.ok(orderService.placeOrder(orderDto));
+        return ResponseEntity.ok(orderService.placeOrder(orderDto));
 
     }
+
     @PutMapping("/{orderId}/order-items/{orderItem}")
-    public ResponseEntity<String> updateOrder(@PathVariable("orderId")Long orderId,
+    public ResponseEntity<String> updateOrder(@PathVariable("orderId") Long orderId,
                                               @PathVariable("orderItem") Long orderItem,
-                                              @RequestBody @Valid OrderItemDto orderItemDto){
-        return ResponseEntity.ok(orderService.updateOrder(orderId,orderItem,orderItemDto));
+                                              @RequestBody @Valid OrderItemDto orderItemDto) {
+        return ResponseEntity.ok(orderService.updateOrder(orderId, orderItem, orderItemDto));
+    }
+
+    @GetMapping
+    public ResponseEntity<Map<String, Object>> fetchOrders(
+            @RequestParam(value = "pageNo", defaultValue
+                    = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+            @RequestParam(value = "pageSize", defaultValue
+                    = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize
+    ) {
+        return ResponseEntity.ok(orderService.fetchOrders(pageNo, pageSize));
     }
 }

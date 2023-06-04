@@ -1,6 +1,7 @@
 package com.example.api.category;
 
 import com.example.api.product.Product;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.Hibernate;

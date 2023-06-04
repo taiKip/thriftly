@@ -6,6 +6,7 @@ import com.example.api.order.Order;
 import com.example.api.token.Token;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -39,6 +40,7 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     @JsonBackReference
     @ToString.Exclude
+    @JsonManagedReference
     private List<Order> orders;
 
     @OneToMany(mappedBy = "user")
