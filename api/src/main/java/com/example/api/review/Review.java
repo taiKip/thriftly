@@ -2,6 +2,7 @@ package com.example.api.review;
 
 import com.example.api.entity.BaseEntity;
 import com.example.api.product.Product;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,6 +23,7 @@ private String title;
     private String comment;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
+    @JsonBackReference
     @ToString.Exclude
     private Product product;
 }

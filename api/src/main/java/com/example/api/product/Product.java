@@ -30,7 +30,7 @@ public class Product extends BaseEntity {
     private Double averageRating;
     @ManyToOne
     @JoinColumn(name = "category_id")
-    @JsonBackReference
+    @JsonIgnore
     @ToString.Exclude
     private Category category;
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
