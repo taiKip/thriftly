@@ -114,3 +114,6 @@ export interface IQuery {
   sortDir?: sortDirectionType
   sortBy?: string
 }
+export interface IResponse {
+  response: string
+}

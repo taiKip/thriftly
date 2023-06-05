@@ -1,20 +1,19 @@
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  Rating,
-  TextField,
-  Typography
-} from '@mui/material'
-import HistoryEduIcon from '@mui/icons-material/HistoryEdu'
 import { FormEvent, useState, ChangeEvent } from 'react'
+import Box from '@mui/material/Box'
+import Dialog from '@mui/material/Dialog'
+import Button from '@mui/material/Button'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogTitle from '@mui/material/DialogTitle'
+import IconButton from '@mui/material/IconButton'
+import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
+import Rating from '@mui/material/Rating'
+import HistoryEduIcon from '@mui/icons-material/HistoryEdu'
+import ArrowBack from '@mui/icons-material/ArrowBack'
+
 import { fieldStyle } from '../../styles'
 import { useAddReviewMutation } from './productApiSlice'
-import { ArrowBack } from '@mui/icons-material'
 import { IReview } from '../../interfaces'
 
 const AddReviewForm = ({

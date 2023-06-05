@@ -17,25 +17,20 @@ public class UserController {
 
 
     @GetMapping
-    public ResponseEntity<Map<String,Object>> fetchUsers(@RequestParam(value = "sortBy", defaultValue
+    public ResponseEntity<Map<String, Object>> fetchUsers(@RequestParam(value = "sortBy", defaultValue
             = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
-                                          @RequestParam(value = "pageNo", defaultValue
-                                                  = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
-                                          @RequestParam(value = "pageSize", defaultValue
-                                                  = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
-                                          @RequestParam(value = "sortDir", defaultValue
-                                                  = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir) {
+                                                          @RequestParam(value = "pageNo", defaultValue
+                                                                  = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+                                                          @RequestParam(value = "pageSize", defaultValue
+                                                                  = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+                                                          @RequestParam(value = "sortDir", defaultValue
+                                                                  = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir) {
         return ResponseEntity.ok(userService.fetchUsers(pageNo, pageSize, sortDir, sortBy));
     }
 
-    @PutMapping("/{userId}")
-    public ResponseEntity<String> assignRole(@PathVariable("userId") Long userId, @RequestBody String role) throws UserRoleNotFoundException {
-        return ResponseEntity.ok(userService.assignRole(userId, role));
-    }
-
-    @PutMapping("/{userId}/banUser")
-    public ResponseEntity<String> banUser(@PathVariable("userId") Long userId) {
-        return ResponseEntity.ok(userService.banUser(userId));
+    @PatchMapping("/{userId}")
+    public ResponseEntity<UpdateResponseDto> updateUserRoleAndStatus(@PathVariable("userId") Long userId, @RequestBody UserUpdateRequestDto requestDto) throws UserRoleNotFoundException {
+        return ResponseEntity.ok(userService.updateUserRoleAndStatus(userId, requestDto));
     }
 
     @GetMapping("/search")

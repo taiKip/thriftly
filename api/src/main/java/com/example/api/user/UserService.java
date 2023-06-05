@@ -14,7 +14,7 @@ public interface UserService extends UserDetailsService {
     @Override
     UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
     Map<String,Object> searchUsersByName(String query, int pageNumber, int pageSize);
-    String banUser(Long userId);
-    String assignRole(Long userId, String role) throws UserRoleNotFoundException;
 
+
+    UpdateResponseDto updateUserRoleAndStatus(Long userId, UserUpdateRequestDto requestDto) throws UserRoleNotFoundException;
 }

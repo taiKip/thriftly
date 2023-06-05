@@ -1,36 +1,45 @@
-import { useState } from 'react'
+import { FormEvent, useState, ChangeEvent } from 'react'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
 import Container from '@mui/material/Container'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
-import Box from '@mui/material/Box'
+import Toolbar from '@mui/material/Toolbar'
+import { SelectChangeEvent } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import IconButton from '@mui/material/IconButton'
-import CheckBox from '@mui/icons-material/CheckBox'
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
+import Box from '@mui/material/Box'
+import Dialog from '@mui/material/Dialog'
+import Button from '@mui/material/Button'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogTitle from '@mui/material/DialogTitle'
+import ArrowBack from '@mui/icons-material/ArrowBack'
+
+import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
 
 import { useGetUsersQuery } from './userSlice'
 import SmallScreenAppBar from '../../components/SmallScreenAppBar'
-import { MenuItem, Select, SelectChangeEvent, Toolbar, Typography } from '@mui/material'
+import Paginator from '../../components/Table/Paginator'
+import UserProfile from './UserProfile'
 
 const UsersPage = () => {
   const theme = useTheme()
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(2)
+  const [openDialog, setOpenDialog] = useState(false)
+  const [selectedUser, setSelecteUser] = useState<number | null>(null)
   const { data } = useGetUsersQuery(
     { pageNo: page, pageSize: rowsPerPage },
     {
       refetchOnFocus: true,
-      refetchOnMountOrArgChange: true
+      refetchOnMountOrArgChange: true,
+      pollingInterval: 20000
     }
   )
-  if (data) {
-    console.log(data)
-  }
   const handleNextPage = () => {
     if (data?.nextPage) {
       setPage((prev) => prev + 1)
@@ -42,12 +51,29 @@ const UsersPage = () => {
     }
   }
   const handleChangeRowsPerPage = (event: SelectChangeEvent) => {
-    setRowsPerPage(+event.target.value)
+    if (data?.nextPage) {
+      setRowsPerPage(+event.target.value)
+    }
   }
-  console.log('Page::', page, 'Rows::', rowsPerPage)
+  const handleClose = () => {
+    setOpenDialog((prev) => !prev)
+  }
+  const handleActionRowClick = (id: number) => {
+    setSelecteUser(id)
+    setOpenDialog(true)
+  }
   return (
     <>
       <SmallScreenAppBar />
+      <Dialog
+        fullWidth
+        sx={{ top: '-30vh' }}
+        open={openDialog}
+        onClose={handleClose}
+        aria-labelledby="add review"
+        aria-describedby="add a review to  product">
+        <UserProfile userId={selectedUser} handleClose={handleClose} />
+      </Dialog>
       <Toolbar sx={{ display: { sm: 'none', xs: 'block' } }} />
       <Container sx={{ width: '100vw' }}>
         <Table>
@@ -76,7 +102,7 @@ const UsersPage = () => {
                   <TableCell align="center">{item.role}</TableCell>
                   <TableCell align="center">{item.banned ? 'BANNED' : 'ACTIVE'}</TableCell>
                   <TableCell align="center">
-                    <IconButton>
+                    <IconButton onClick={() => handleActionRowClick(item.id)}>
                       <MoreVertIcon />
                     </IconButton>
                   </TableCell>
@@ -84,40 +110,16 @@ const UsersPage = () => {
               ))}
           </TableBody>
         </Table>
-        <Toolbar sx={{ gap: 2 }}>
-          <Typography color={'textPrimary'} sx={{ marginLeft: 'auto' }}>
-            Rows per page
-          </Typography>
-          <Select
-            value={rowsPerPage + ''}
-            sx={{ padding: 0, border: 0 }}
-            size="small"
-            onChange={handleChangeRowsPerPage}>
-            <MenuItem value={2}>2</MenuItem>
-            <MenuItem value={5}>5</MenuItem>
-            <MenuItem value={10}>10</MenuItem>
-          </Select>
-          <Box
-            component={'div'}
-            display={'flex'}
-            minWidth={'200px'}
-            gap={2}
-            alignItems={'center'}
-            justifyContent={'center'}
-            sx={{ padding: '0 5px' }}>
-            <IconButton
-              size="small"
-              onClick={handlePrevPage}
-              sx={{ padding: '2px' }}
-              disabled={!data?.hasPreviousPage}>
-              <ArrowBackIosIcon />
-            </IconButton>
-            <Typography color={'textPrimary'}>{`page ${page + 1} of ${data?.totalPages} `}</Typography>
-            <IconButton size="small" onClick={handleNextPage} disabled={!data?.nextPage}>
-              <ArrowForwardIosIcon />
-            </IconButton>
-          </Box>
-        </Toolbar>
+        <Paginator
+          currentPage={page}
+          totalPages={data?.totalPages || 0}
+          handleChangeRowsPerPage={handleChangeRowsPerPage}
+          handleNextPage={handleNextPage}
+          handlePrevPage={handlePrevPage}
+          rowsPerPage={rowsPerPage}
+          hasNextPage={data?.nextPage ?? true}
+          hasPreviousPage={data?.hasPreviousPage ?? true}
+        />
       </Container>
     </>
   )

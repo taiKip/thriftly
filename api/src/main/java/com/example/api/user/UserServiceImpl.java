@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -51,33 +52,37 @@ private final PageResponseDtoMapper pageResponseDtoMapper;
             return  new HashMap<String,Object>();
         }
     }
-@Override
-    public String assignRole(Long userId, String role) throws UserRoleNotFoundException {
 
-        String newRole = role.toUpperCase();
-       if(Role.valueOf(newRole)!=Role.USER && Role.valueOf(newRole)!=Role.ADMIN && Role.valueOf(newRole)!=Role.MANAGER){
-           throw new UserRoleNotFoundException("role not found");
-       }
+    @Override
+    public UpdateResponseDto updateUserRoleAndStatus(Long userId, UserUpdateRequestDto requestDto) throws UserRoleNotFoundException {
         Optional<User> userDb = userRepository.findById(userId);
         if(userDb.isEmpty()){
             throw new UsernameNotFoundException("User not found");
         }
         User foundUser= userDb.get();
-        foundUser.setRole(Role.valueOf(newRole));
-        userRepository.save(foundUser);
-        return  String.format("%s has been assigned %s role",foundUser.getName(),role);
-    }
-@Override
-    public String banUser(Long userId) {
-        Optional<User> userDb = userRepository.findById(userId);
-        if(userDb.isEmpty()){
-            throw new UsernameNotFoundException("User not found");
+        if(Objects.nonNull(requestDto.getRole()) &&  !"".equalsIgnoreCase(requestDto.getRole())){
+            String newRole = requestDto.getRole().toUpperCase();
+            if(Role.valueOf(newRole)!=Role.USER && Role.valueOf(newRole)!=Role.ADMIN && Role.valueOf(newRole)!=Role.MANAGER){
+                throw new UserRoleNotFoundException("role not found");
+            }
+            foundUser.setRole(Role.valueOf(newRole));
         }
-        User foundUser= userDb.get();
-        foundUser.setBanned(true);
-        userRepository.save(foundUser);
-        return String.format("%s has been banned from the site",foundUser.getName());
+     if(requestDto.isBanned()){
+         foundUser.setBanned(true);
+         foundUser.setRole(Role.BANNED);
+         userRepository.save(foundUser);
+         return new UpdateResponseDto(String.format("%s has been banned from the site",foundUser.getName()));
+     }else if(!requestDto.isBanned()) {
+         foundUser.setBanned(false);
+         foundUser.setRole(Role.USER);
+         userRepository.save(foundUser);
+         return new UpdateResponseDto(String.format("%s has been unbanned from the site",foundUser.getName()));
+     }
+     userRepository.save(foundUser);
+        return  new UpdateResponseDto(String.format("%s role has been assigned %s role",foundUser.getName(),requestDto.getRole().toUpperCase()));
     }
+
+
 @Override
     public Map searchUsersByName(String query, int pageNumber, int pageSize) {
         Pageable pageable=  PageRequest.of(pageSize,pageNumber);
