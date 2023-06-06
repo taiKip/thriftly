@@ -17,6 +17,7 @@ public class OrderItem {
     @Id
     @GeneratedValue
     private Long id;
+
     @ManyToOne
     @JoinColumn(name = "order_id")
     @JsonBackReference

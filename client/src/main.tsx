@@ -11,7 +11,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <Provider store={store}>
-    <GoogleOAuthProvider clientId="179228844613-do7b4fbiqb03ghtv9btqj4edulnsiq6g.apps.googleusercontent.com">
+    <GoogleOAuthProvider clientId="179228844613-eea7rq7f6psii5h799co0v5rlbgokpvq.apps.googleusercontent.com">
       <Router>
         <Routes>
           <Route path="/*" element={<App />} />

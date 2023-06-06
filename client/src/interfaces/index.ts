@@ -1,6 +1,6 @@
 import { cartItemType } from '../features/cart/cartSlice'
-import { orderStatusType } from '../types'
-import { sortDirectionType } from '../features/types'
+import { orderStatusType } from '../types/index'
+import { sortDirectionType } from '../types'
 export interface IReview {
   id: number
   rating: number
@@ -67,13 +67,13 @@ export interface IPageTitle {
   name: string
   description: string
 }
-export interface IOrderItem {
+export interface ICartItem {
   productId: number
   quantity: number
 }
 
 export interface IOrder {
-  orderItems: IOrderItem[]
+  orderItems: ICartItem[]
   addressId: number | null
 }
 export interface ITableProps {
@@ -107,13 +107,38 @@ export interface IAddress {
   phone: string
   isDefault: boolean
 }
-export interface IQuery {
-  categoryId?: number
-  pageNo?: number
-  pageSize?: number
-  sortDir?: sortDirectionType
-  sortBy?: string
-}
 export interface IResponse {
   response: string
+}
+export interface IGoogleUser {
+  access_token: string
+  authuser: string
+  expires_in: number
+  prompt: string
+  scope: string
+  token_type: string
+}
+export interface IOrderItem {
+  quantity: number
+  total: number
+  name: string
+}
+export interface IOrderResponse {
+  orderId: number
+  createdAt: string
+  address: IAddress
+  orderStatus: orderStatusType
+  total: number
+  orderItems: IOrderItem[]
+}
+export interface IQuery {
+  categoryId: number
+  pageNo: number
+  pageSize: number
+  sortDir: sortDirectionType
+  sortBy: string
+}
+export interface ICartItems {
+  quantity: number
+  productId: number
 }

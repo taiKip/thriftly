@@ -1,7 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { logOut, setCredentials } from './authSlice'
-import { RootState } from '../../app/store'
-
+import { logOut } from './authSlice'
 import { IUser } from '../../interfaces'
 import { apiSlice } from '../api/apiSlice'
 
@@ -17,6 +14,13 @@ export const extendedAuthenticationSlice = apiSlice.injectEndpoints({
     loginUser: builder.mutation({
       query: (body: Partial<IUser>) => ({
         url: '/auth/authenticate',
+        method: 'POST',
+        body
+      })
+    }),
+    oauth2Login: builder.mutation({
+      query: (body) => ({
+        url: '/auth/oauth2',
         method: 'POST',
         body
       })
@@ -38,5 +42,9 @@ export const extendedAuthenticationSlice = apiSlice.injectEndpoints({
   })
 })
 
-export const { useRegisterUserMutation, useLoginUserMutation, useLogOutUserMutation } =
-  extendedAuthenticationSlice
+export const {
+  useRegisterUserMutation,
+  useLoginUserMutation,
+  useLogOutUserMutation,
+  useOauth2LoginMutation
+} = extendedAuthenticationSlice

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-import { IOrder, IOrderItem } from '../../interfaces'
+import { IOrder, ICartItem } from '../../interfaces'
 import { RootState } from '../../app/store'
 
 const initialOrderState: IOrder = {
@@ -16,7 +16,7 @@ const orderSlice = createSlice({
       state.addressId = addressId
     },
     addOrderItems: (state, action: PayloadAction<Partial<IOrder>>) => {
-      const orderItems = action.payload.orderItems as IOrderItem[]
+      const orderItems = action.payload.orderItems as ICartItem[]
       state.orderItems = orderItems
     },
     resetOrderItems: (state) => {

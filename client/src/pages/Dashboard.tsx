@@ -1,27 +1,26 @@
+/**
+ * @packages
+ */
+import { Link } from 'react-router-dom'
 import Box from '@mui/material/Box'
-import InputLabel from '@mui/material/InputLabel'
-import MenuItem from '@mui/material/MenuItem'
-import FormControl from '@mui/material/FormControl'
 import PaidIcon from '@mui/icons-material/Paid'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
 import PendingActionsIcon from '@mui/icons-material/PendingActions'
-import { useState } from 'react'
-
-import { Button, CardHeader, Toolbar, Typography, useTheme, Card, CardContent } from '@mui/material'
-import {
-  Add,
-  CheckBoxOutlined,
-  ConstructionOutlined,
-  Help,
-  ReportOutlined,
-  Upload
-} from '@mui/icons-material'
-import { Stack } from '@mui/system'
+import Button from '@mui/material/Button'
+import CardHeader from '@mui/material/CardHeader'
+import Toolbar from '@mui/material/Toolbar'
+import Card from '@mui/material/Card'
+import Typography from '@mui/material/Typography'
+import CardContent from '@mui/material/CardContent'
+import Add from '@mui/icons-material/Add'
+import CheckBoxOutlined from '@mui/icons-material/CheckBoxOutlined'
+import Stack from '@mui/material/Stack'
+import useTheme from '@mui/material/styles/useTheme'
+/**
+ * @components
+ */
 import CardItem, { ICardProps } from '../components/CardItem'
 import BarChart from '../components/BarChart'
-import EnhancedTable from '../components/Table/EnhancedTable'
-import { Link } from 'react-router-dom'
-import { useGetOrdersQuery } from '../features/orders/orderApiSlice'
+import EnhancedTable from '../features/orders/EnhancedTable'
 
 const cardItems = [
   {
@@ -29,35 +28,29 @@ const cardItems = [
     icon: <PendingActionsIcon color="warning" />,
     title: 'Pending',
     status: 'emergency',
-    works: '+21%'
+    orders: '+21%'
   },
   {
     color: 'purple',
     icon: <PaidIcon color="info" />,
     title: 'Confirmed',
     status: 'normal',
-    works: '-49%'
+    orders: '-49%'
   },
   {
     color: '#43a047',
     icon: <CheckBoxOutlined color="success" />,
     title: 'Fullfilled',
     status: 'fullfilled',
-    works: '-7%'
+    orders: '-7%'
   }
 ] as ICardProps[]
 const labels = ['Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat', 'Sun']
 const data = [15, 13, 23, 15, 22, 16, 7]
 
 const Dashboard = () => {
-  const [severity, setSeverity] = useState('')
-  const handleChange = (event: SelectChangeEvent) => {
-    setSeverity(event.target.value)
-  }
-
   const theme = useTheme()
 
-  const { data, isLoading, isSuccess } = useGetOrdersQuery()
   return (
     <Box>
       <Toolbar />
@@ -71,9 +64,6 @@ const Dashboard = () => {
               New Product
             </Button>
           </Link>
-          <Button variant="contained" startIcon={<Add />} color="inherit">
-            New Category
-          </Button>
         </Stack>
       </Box>
       <Box marginTop={3} display="flex" flexDirection={'column'}>
@@ -93,7 +83,7 @@ const Dashboard = () => {
               key={item.title}
               title={item.title}
               icon={item.icon}
-              works={item.works}
+              orders={item.orders}
               color={item.color}
               status={item.status}
             />

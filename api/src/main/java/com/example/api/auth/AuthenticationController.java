@@ -21,6 +21,12 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.register(request));
     }
 
+    @PostMapping("/oauth2")
+    public ResponseEntity<AuthenticationResponseDto> oAuth2(@RequestBody OAuth2Dto oAuth2Dto) {
+
+        return ResponseEntity.ok(new AuthenticationResponseDto(oAuth2Dto.code(),oAuth2Dto.scope()));
+    }
+
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponseDto> authenticate(@RequestBody @Valid AuthenticationRequestDto request) {
         return ResponseEntity.ok(authenticationService.authenticate(request));
@@ -30,6 +36,6 @@ public class AuthenticationController {
     public void refreshToken(
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-authenticationService.refreshToken(request,response);
+        authenticationService.refreshToken(request, response);
     }
 }

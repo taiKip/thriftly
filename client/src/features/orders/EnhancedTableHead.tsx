@@ -9,7 +9,6 @@ import Button from '@mui/material/Button'
 
 import { useState } from 'react'
 const EnhancedTableHead = () => {
-  const [city, setCity] = useState('')
   const [sortBy, setSortBy] = useState('')
 
   return (

@@ -22,6 +22,7 @@ import OrderPage from './features/orders/OrderPage'
 import NewUserAddress from './features/address/NewUserAddress'
 import BlogPage from './features/blog/BlogPage'
 import UsersPage from './features/users/UsersPage'
+import AddNewCategoryForm from './features/categories/AddNewCategoryForm'
 
 export const ThemeContext = createContext({
   toggleColorMode: () => {
@@ -56,6 +57,7 @@ const App = () => {
               {/**protectd routes */}
               <Route element={<RequireAuth />}>
                 <Route path="orders" element={<OrderPage />} />
+                <Route path="categories" element={<AddNewCategoryForm />} />
                 <Route path="edit/:productId" element={<UpdateProductForm />} />
                 <Route path="dashboard">
                   <Route index element={<Dashboard />} />

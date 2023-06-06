@@ -7,7 +7,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -28,10 +31,11 @@ public class Address {
     private String zipCode;
 
     private boolean isDefault;
-    @OneToMany(mappedBy = "address")
+    @OneToMany(mappedBy = "address", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @ToString.Exclude
     @JsonManagedReference
-    private Set<Order> orders;
+    @JsonIgnore
+    private List<Order> orders;
     @ManyToMany(cascade = {
             CascadeType.PERSIST,
             CascadeType.MERGE
@@ -43,6 +47,8 @@ public class Address {
     )
     @ToString.Exclude
     @JsonManagedReference
+    @JsonIgnore
     private Set<User> users = new HashSet<>();
+
 
 }

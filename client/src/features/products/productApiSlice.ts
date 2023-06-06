@@ -1,18 +1,11 @@
 import { IPage } from '../../interfaces'
 import { IProduct, IReview } from '../../interfaces'
 import { apiSlice } from '../api/apiSlice'
-import { sortDirectionType } from '../types'
-export interface IQuery {
-  categoryId?: number
-  pageNo?: number
-  pageSize?: number
-  sortDir?: sortDirectionType
-  sortBy?: string
-}
+import { IQuery } from '../../interfaces'
 export const extendedProductsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    getProducts: builder.query<IPage<IProduct>, IQuery>({
-      query: ({ categoryId = 1, pageNo = 0, pageSize = 10, sortDir = 'ASC', sortBy = 'name' }) =>
+    getProducts: builder.query<IPage<IProduct>, Partial<IQuery>>({
+      query: ({ categoryId = 1, pageNo, pageSize, sortDir = 'ASC', sortBy = 'name' }) =>
         `/products?categoryId=${categoryId}&pageSize=${pageSize}&pageNo=${pageNo}&sortDir=${sortDir}&sortBy=${sortBy}`,
       providesTags: ['Products']
     }),

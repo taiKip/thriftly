@@ -14,6 +14,7 @@ import { IconButton, Typography } from '@mui/material'
 import { useGetAddressesByUserIdQuery } from './addressSlice'
 import { useAppDispatch } from '../../app/hooks'
 import { addOrderAddress } from '../orders/orderSlice'
+import { IAddress } from '../../interfaces'
 
 const AddressList = ({ toggle }: { toggle: () => void }) => {
   const dispatch = useAppDispatch()
@@ -25,9 +26,8 @@ const AddressList = ({ toggle }: { toggle: () => void }) => {
   })
   let defaultAddress = null
   if (data) {
-    defaultAddress = data.find((item) => item.isDefault === true)
+    defaultAddress = data.find((item: IAddress) => item.isDefault === true)
   }
-
   const [addressId, setAddressId] = useState<string | null>(null)
   const [open, setOpen] = useState(false)
   const handleAddressChange = (e: ChangeEvent<HTMLInputElement>) => {

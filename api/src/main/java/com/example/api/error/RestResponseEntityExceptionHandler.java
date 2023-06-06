@@ -3,7 +3,7 @@ package com.example.api.error;
 import com.example.api.address.AddressNotFoundException;
 import com.example.api.category.CategoryExistsException;
 import com.example.api.category.CategoryNotFoundException;
-import com.example.api.orderstatus.OrderStatusNotFoundException;
+
 import com.example.api.product.OutOfStockException;
 import com.example.api.product.ProductNotFoundException;
 import com.example.api.review.ReviewNotFoundException;
@@ -81,11 +81,6 @@ public class RestResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
     }
 
-    @ExceptionHandler(OrderStatusNotFoundException.class)
-    public ResponseEntity<ErrorMessage> orderStatusNotFound(OrderStatusNotFoundException orderStatusNotFoundException) {
-        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR, orderStatusNotFoundException.getMessage());
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
-    }
 
     @ExceptionHandler(OutOfStockException.class)
     public ResponseEntity<ErrorMessage> outOfStock(OutOfStockException outOfStockException) {

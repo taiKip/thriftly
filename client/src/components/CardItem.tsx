@@ -14,10 +14,10 @@ export interface ICardProps {
   title: string
   icon: React.ReactElement<typeof ReportOutlined>
   color: string
-  works: string
+  orders: string
   status: 'pending' | 'confirmed' | 'fullfilled'
 }
-const CardItem = ({ title, icon, color, works }: ICardProps) => {
+const CardItem = ({ title, icon, color, orders }: ICardProps) => {
   return (
     <Card sx={{ width: '100%' }}>
       <CardHeader
@@ -36,7 +36,7 @@ const CardItem = ({ title, icon, color, works }: ICardProps) => {
             <Typography fontWeight="bold">21 Orders</Typography>
             <Typography color="InactiveCaptionText">
               <Box component="span" color={color}>
-                {works}
+                {orders}
               </Box>{' '}
               from last month
             </Typography>

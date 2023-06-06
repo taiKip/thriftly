@@ -47,17 +47,16 @@ public class ProductServiceImpl implements ProductService {
         if(category.isEmpty()){
             throw  new CategoryNotFoundException("Category not found");
         }
-        Product newProduct = Product
-                .builder()
-                .name(productDto.name())
-                .imageUrl(imageUrl)
-                .stock(productDto.stock())
-                .price(productDto.price())
-                .description(productDto.description())
-                .category(category.get())
-                .build();
+        Product product = new Product();
+        product.setStock(productDto.stock());
+        product.setCategory(category.get());
+        product.setName(productDto.name());
+        product.setDescription(productDto.description());
+        product.setPrice(productDto.price());
+        product.setImageUrl(imageUrl);
 
-        return productRepository.save(newProduct);
+
+        return productRepository.save(product);
     }
 
     @Override

@@ -10,7 +10,7 @@ spring:
       max-request-size: 215MB
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     show-sql: true
     properties:
       hibernate:
@@ -25,6 +25,12 @@ spring:
       expiration: 3600000
       refresh-token:
         expiration: 604800000
+    oauth2:
+      client:
+        registration:
+            google:
+              client-id: 179228844613-on61dl5qnq40b1l19mp7qp3cgi1fa22b.apps.googleusercontent.com
+              client-secret: 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
 server:
   error:
     include-binding-errors: always

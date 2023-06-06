@@ -37,9 +37,9 @@ const Paginator = ({
         sx={{ padding: 0, border: 0 }}
         size="small"
         onChange={handleChangeRowsPerPage}>
-        <MenuItem value={2}>2</MenuItem>
         <MenuItem value={5}>5</MenuItem>
         <MenuItem value={10}>10</MenuItem>
+        <MenuItem value={15}>15</MenuItem>
       </Select>
       <Box
         component={'div'}

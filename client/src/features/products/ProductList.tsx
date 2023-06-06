@@ -1,21 +1,19 @@
-import { Box, Typography, Toolbar, Skeleton } from '@mui/material'
+import { Box, Toolbar, Skeleton } from '@mui/material'
 import Product from './Product'
 import { useGetProductsQuery } from './productApiSlice'
 import { useEffect, useState } from 'react'
 import SearchBar from '../../components/SearchBar'
 import { wrapperStyle } from '../../styles'
-import EnhancedSelect from '../../components/EnhancedSelect'
-import { sortItems } from '../../utils/functions/extraValues'
-import { sortArray } from '../../utils/functions/Comparator'
+import { SelectChangeEvent } from '@mui/material'
 
 import { IPage, IProduct } from '../../interfaces'
 import useDebounce from '../../utils/hooks/useDebounce'
 import Wrapper from '../../components/wrapper/Wrapper'
-import Corousel from '../../components/corousel/Corousel'
+import Corousel from '../../components/Corousel'
 import Categories from '../categories/Categories'
 import { useParams } from 'react-router-dom'
-import { useGetCategoriesQuery } from '../categories/categoryApiSlice'
-import { searchQueryType, sortDirectionType } from '../types'
+import { searchQueryType, sortDirectionType } from '../../types'
+import Paginator from '../../components/Table/Paginator'
 
 const items = [1, 2, 3, 4, 5, 6, 7, 8]
 const ProductList = () => {
@@ -24,11 +22,11 @@ const ProductList = () => {
 
   const [sortDir, setSortDir] = useState<sortDirectionType>('ASC')
   const [sortBy, setSortBy] = useState<searchQueryType>('name')
-  const [pageSize, setPageSize] = useState(10)
+  const [pageSize, setRowsPerPageSize] = useState(5)
   const [pageNo, setPageNo] = useState(0)
   const [searchItem, setSearchItem] = useState<string>('')
 
-  const { data, isLoading, isSuccess } = useGetProductsQuery(
+  const { data, isLoading } = useGetProductsQuery(
     {
       categoryId: category,
       pageNo,
@@ -41,6 +39,21 @@ const ProductList = () => {
     }
   )
 
+  const handleNextPage = () => {
+    if (data?.nextPage) {
+      setPageNo((prev) => prev + 1)
+    }
+  }
+  const handlePrevPage = () => {
+    if (data?.hasPreviousPage) {
+      setPageNo((prev) => prev - 1)
+    }
+  }
+  const handleChangeRowsPerPage = (event: SelectChangeEvent) => {
+    if (data?.nextPage) {
+      setRowsPerPageSize(+event.target.value)
+    }
+  }
   //const debounceSearchValue = useDebounce(searchItem, 500)
 
   // if (debounceSearchValue !== '' && data) {
@@ -69,8 +82,8 @@ const ProductList = () => {
           ))}
 
         {data &&
-          data?.products &&
-          data?.products.map((item) => (
+          data?.items &&
+          data?.items.map((item) => (
             <Product
               stock={item.stock}
               reviews={item.reviews}
@@ -84,6 +97,16 @@ const ProductList = () => {
             />
           ))}
       </Wrapper>
+      <Paginator
+        currentPage={pageNo}
+        totalPages={data?.totalPages || 0}
+        handleChangeRowsPerPage={handleChangeRowsPerPage}
+        handleNextPage={handleNextPage}
+        handlePrevPage={handlePrevPage}
+        rowsPerPage={pageSize}
+        hasNextPage={data?.nextPage ?? true}
+        hasPreviousPage={data?.hasPreviousPage ?? true}
+      />
     </>
   )
 }

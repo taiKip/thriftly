@@ -12,7 +12,7 @@ import Snackbar from '@mui/material/Snackbar'
 import { useAppDispatch, useAppSelector } from '../../app/hooks'
 import { resetCart, selectAllOrders } from '../cart/cartSlice'
 import { resetOrderItems, selectOrderAddress } from './orderSlice'
-import { IOrder, IOrderItem } from '../../interfaces'
+import { IOrder, ICartItem } from '../../interfaces'
 import { usePlaceOrderMutation } from './orderApiSlice'
 import ErrorAlert from '../../components/error/ErrorAlert'
 import { useGetDefaultUserAddressQuery } from '../address/addressSlice'
@@ -34,7 +34,7 @@ const OrderItems = () => {
   })
   let userAddress = addressId
   const handlePlaceOrder = async () => {
-    const orderItems: IOrderItem[] = []
+    const orderItems: ICartItem[] = []
     cartItems.map((item) => orderItems.push({ quantity: item.quantity, productId: item.id }))
     /**
      * @desc user default user address if user hasn't changed address

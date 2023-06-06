@@ -2,7 +2,6 @@ package com.example.api.order;
 
 import com.example.api.address.AddressNotFoundException;
 import com.example.api.orderitem.OrderItemDto;
-import com.example.api.orderstatus.OrderStatusNotFoundException;
 import com.example.api.product.OutOfStockException;
 import com.example.api.product.ProductNotFoundException;
 import com.example.api.utils.AppConstants;
@@ -31,7 +30,7 @@ public class OrderController {
     )
     @PostMapping
     public ResponseEntity<Map<String, Object>> placeOrder(@RequestBody @Valid OrderDto orderDto) throws ProductNotFoundException,
-            OrderStatusNotFoundException, AddressNotFoundException, OutOfStockException {
+             AddressNotFoundException, OutOfStockException {
 
         return ResponseEntity.ok(orderService.placeOrder(orderDto));
 

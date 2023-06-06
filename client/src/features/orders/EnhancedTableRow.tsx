@@ -5,10 +5,16 @@ import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import PendingActionsIcon from '@mui/icons-material/PendingActions'
-
 import MoreVertIcon from '@mui/icons-material/MoreVert'
+import CheckBoxOutlined from '@mui/icons-material/CheckBoxOutlined'
+import PaidIcon from '@mui/icons-material/Paid'
 import RequestQuoteIcon from '@mui/icons-material/RequestQuote'
 import Avatar from '@mui/material/Avatar'
+import moment from 'moment'
+
+import { IOrderResponse } from '../../interfaces'
+import { orderStatusType } from '../../types/index'
+import { DATE_FORMAT } from '../../utils/AppConstants'
 
 export interface tableRowProps {
   firstName: string
@@ -19,20 +25,30 @@ export interface tableRowProps {
   status: 'fixed' | 'pending'
 }
 const EnhancedTableRow = ({
-  firstName,
-  lastName,
-  repairRequest,
-  complaintId,
-  severity
-}: tableRowProps) => {
+  address,
+  createdAt,
+  orderId,
+  orderItems,
+  orderStatus,
+  total
+}: IOrderResponse) => {
   const theme = useTheme()
-  const [orderStatus, setOrderStatus] = useState('')
+  const [status, setStatus] = useState<orderStatusType>(orderStatus)
   const handleChange = (event: SelectChangeEvent) => {
-    setOrderStatus(event.target.value)
+    setStatus(event.target.value as orderStatusType)
   }
-
+  let icon = <PendingActionsIcon color="warning" />
+  if (orderStatus === 'FULFILLED') {
+    icon = <CheckBoxOutlined color="success" />
+  } else if (orderStatus === 'CONFIRMED') {
+    icon = <PaidIcon color="info" />
+  }
   return (
-    <TableRow sx={{ justifyContent: 'center', tableLayout: 'fixed' }}>
+    <TableRow
+      sx={{
+        justifyContent: 'center',
+        '&:nth-of-type(odd)': { background: theme.palette.action.hover }
+      }}>
       <TableCell padding="checkbox">
         <Checkbox
           color={theme.palette.mode === 'dark' ? 'primary' : 'secondary'}
@@ -41,25 +57,22 @@ const EnhancedTableRow = ({
           }}
         />
       </TableCell>
-      <TableCell sx={{ display: 'flex', alignItems: 'center', gap: 2, whiteSpace: 'no-wrap' }}>
-        {severity === 'Emergency' ? (
-          <PendingActionsIcon color="warning" />
-        ) : (
-          <RequestQuoteIcon color="success" />
-        )}
+      <TableCell sx={{ alignItems: 'center', display: 'grid', whiteSpace: 'nowrap' }}>
+        {icon}
         <Box>
           <Typography variant="subtitle2" color="GrayText">
-            {complaintId}
+            id:
+            {orderId}
           </Typography>
           <Typography component={'h4'} fontWeight="bold">
-            {repairRequest}
+            {`${moment(createdAt).format(DATE_FORMAT)}`}
           </Typography>
         </Box>
       </TableCell>
       <TableCell>
         <Box display={'flex'} alignItems="center" gap={2}>
           <Avatar />
-          {firstName + ' ' + lastName}
+          {address.name}
         </Box>
       </TableCell>
       <TableCell>
@@ -70,17 +83,17 @@ const EnhancedTableRow = ({
           <Select
             labelId="status-select"
             id="status-select"
-            value={orderStatus}
+            value={status}
             label="Order Status"
             onChange={handleChange}
             color="secondary">
-            <MenuItem value={'Pending'}>Pending</MenuItem>
-            <MenuItem value={'Confirmed'}>Confirmed</MenuItem>
-            <MenuItem value={'Shipped'}>Fullfilled</MenuItem>
+            <MenuItem value={'PENDING'}>Pending</MenuItem>
+            <MenuItem value={'CONFIRMED'}>Confirmed</MenuItem>
+            <MenuItem value={'FULLFILLED'}>Fullfilled</MenuItem>
           </Select>
         </FormControl>
       </TableCell>
-      <TableCell>€207.85</TableCell>
+      <TableCell>€{total.toFixed(2)}</TableCell>
     </TableRow>
   )
 }

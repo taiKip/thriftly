@@ -6,9 +6,6 @@ import com.example.api.address.AddressService;
 import com.example.api.dto.TitlePageDto;
 import com.example.api.orderitem.OrderItemDto;
 import com.example.api.orderitem.OrderItemService;
-import com.example.api.orderstatus.OrderStatus;
-import com.example.api.orderstatus.OrderStatusNotFoundException;
-import com.example.api.orderstatus.OrderStatusService;
 import com.example.api.product.OutOfStockException;
 import com.example.api.product.Product;
 import com.example.api.product.ProductNotFoundException;
@@ -28,8 +25,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -38,12 +37,11 @@ public class OrderServiceImpl implements OrderService {
     private final UserRepository userRepository;
     private final OrderItemService orderItemService;
     private final OrderRepository orderRepository;
-    private final OrderStatusService orderStatusService;
     private final AddressService addressService;
     private final PageResponseDtoMapper pageResponseDtoMapper;
     @Override
     @Transactional
-    public Map<String, Object> placeOrder(OrderDto orderDto) throws ProductNotFoundException, OrderStatusNotFoundException, AddressNotFoundException, OutOfStockException {
+    public Map<String, Object> placeOrder(OrderDto orderDto) throws ProductNotFoundException, AddressNotFoundException, OutOfStockException {
 
 String username = SecurityContextHolder.getContext().getAuthentication().getName();
 /**
@@ -53,14 +51,13 @@ String username = SecurityContextHolder.getContext().getAuthentication().getName
         if(userDb.isEmpty()){
             throw new UsernameNotFoundException("Please sign in to continue");
         }
-        OrderStatus orderStatus = orderStatusService.findOrderStatusByName("Pending");
         Address addressDb = addressService.findAddressById(orderDto.addressId());
         /**
          * create new order and  save;
          */
         Order newOrder = Order
                 .builder()
-                .orderStatus(orderStatus)
+                .orderStatus(OrderStatus.PENDING)
                  .user(userDb.get())
                 .address(addressDb)
                 .build();
@@ -88,12 +85,18 @@ String username = SecurityContextHolder.getContext().getAuthentication().getName
         Pageable pageable = PageRequest.of(pageNo, pageSize,Sort.by(Sort.Direction.DESC,"createdAt"));
         Page<Order> orders = orderRepository.findAll(pageable);
 
-        if (orders.hasContent()) {
+         if (orders.hasContent()) {
             LOGGER.info(orders.toString());
-            TitlePageDto<Order> titlePageDto = new TitlePageDto<>("orders", orders);
+            TitlePageDto<OrderResponseDto> titlePageDto = new TitlePageDto<>("items", orders.map(this::convertToDto));
             return pageResponseDtoMapper.apply(titlePageDto);
         } else {
             return new HashMap<>();
         }
+    }
+    private OrderResponseDto convertToDto(Order order){
+      List<ProductResponseDto> products = order.getOrderItems().stream()
+              .map(orderItem
+                      -> new ProductResponseDto(orderItem.getQuantity(),orderItem.getSubtotal(),orderItem.getProduct().getName())).collect(Collectors.toList());
+        return new OrderResponseDto(order.getId(), order.getCreatedAt(),order.getAddress(),order.getOrderStatus(),order.getTotal(),products);
     }
 }

@@ -43,7 +43,6 @@ public class User implements UserDetails {
     @JsonBackReference
     @ToString.Exclude
     @JsonManagedReference
-    @JsonIgnore
     private List<Order> orders;
 
     @OneToMany(mappedBy = "user")

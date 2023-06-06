@@ -21,7 +21,6 @@ const DefaultAddress = ({ toggle }: { toggle: () => void }) => {
    */
   const deliveryAddressId = useAppSelector(selectOrderAddress)
   let newDeliveryAddress = data as IAddress
-  console.log(deliveryAddressId)
   if (deliveryAddressId !== null) {
     const { address } = useGetAddressesByUserIdQuery(undefined, {
       selectFromResult: ({ data, isLoading }) => ({

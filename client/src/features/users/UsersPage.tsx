@@ -1,4 +1,7 @@
-import { FormEvent, useState, ChangeEvent } from 'react'
+/**
+ * @packages
+ */
+import { useState } from 'react'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
@@ -10,17 +13,10 @@ import { SelectChangeEvent } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import IconButton from '@mui/material/IconButton'
-import Box from '@mui/material/Box'
 import Dialog from '@mui/material/Dialog'
-import Button from '@mui/material/Button'
-import DialogActions from '@mui/material/DialogActions'
-import DialogContent from '@mui/material/DialogContent'
-import DialogTitle from '@mui/material/DialogTitle'
-import ArrowBack from '@mui/icons-material/ArrowBack'
-
-import TextField from '@mui/material/TextField'
-import Typography from '@mui/material/Typography'
-
+/**
+ * @components
+ */
 import { useGetUsersQuery } from './userSlice'
 import SmallScreenAppBar from '../../components/SmallScreenAppBar'
 import Paginator from '../../components/Table/Paginator'
@@ -29,7 +25,7 @@ import UserProfile from './UserProfile'
 const UsersPage = () => {
   const theme = useTheme()
   const [page, setPage] = useState(0)
-  const [rowsPerPage, setRowsPerPage] = useState(2)
+  const [rowsPerPage, setRowsPerPage] = useState(5)
   const [openDialog, setOpenDialog] = useState(false)
   const [selectedUser, setSelecteUser] = useState<number | null>(null)
   const { data } = useGetUsersQuery(

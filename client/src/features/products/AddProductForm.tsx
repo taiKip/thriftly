@@ -82,10 +82,12 @@ const AddProductForm = () => {
         price: itemPrice,
         stock: +stock
       }
+      console.log(product)
 
       await addNewProduct(product)
         .unwrap()
         .then((payload) => {
+          console.log(payload)
           setCategoryId('')
           setDescription('')
           setName('')
