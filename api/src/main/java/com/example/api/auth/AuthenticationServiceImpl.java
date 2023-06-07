@@ -46,7 +46,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (userDb.isPresent() && credentialsType==CredentialsType.EMAILPASS) {
             throw new UserNameExistsException("Email already taken");
         }else  if(userDb.isPresent() && credentialsType==CredentialsType.GOOGLE){
-            authenticate(new AuthenticationRequestDto(request.email(),userDb.get().getPassword()));
+        return   authenticate(new AuthenticationRequestDto(request.email(),""),CredentialsType.GOOGLE);
         }
         User user;
         if(credentialsType==CredentialsType.EMAILPASS){
@@ -59,11 +59,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     .build();
         }
         else {
-            String password =generatePassayPassword();
             user = User.builder()
                     .email(request.email())
                     .name(request.name())
-                    .password(passwordEncoder.encode(password))
                     .role(Role.USER)
                     .isBanned(false)
                     .build();
@@ -74,12 +72,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String refreshToken = jwtService.generateRefreshToken(user);
 
         tokenService.saveToken(savedUser, jwtToken, TokenType.BEARER, false, false);
-        return AuthenticationResponseDto.builder().accessToken(jwtToken).refreshToken(refreshToken).build();
+        return AuthenticationResponseDto.builder().accessToken(jwtToken).refreshToken(refreshToken).newUser(true).build();
     }
 
     @Override
-    public AuthenticationResponseDto authenticate(AuthenticationRequestDto request) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.email(), request.password()));
+    public AuthenticationResponseDto authenticate(AuthenticationRequestDto request,CredentialsType credentialsType) {
+        if(credentialsType ==CredentialsType.EMAILPASS){
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.email(), request.password()));
+        }
+
         User user = userRepository
                 .findByEmailIgnoreCase(
                         request.email())
@@ -90,7 +91,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String refreshToken = jwtService.generateRefreshToken(user);
         tokenService.revokeAllUserTokens(user);
         tokenService.saveToken(user, token, TokenType.BEARER, false, false);
-        return AuthenticationResponseDto.builder().accessToken(token).refreshToken(refreshToken).build();
+        return AuthenticationResponseDto.builder().accessToken(token).refreshToken(refreshToken).newUser(false).build();
     }
 
     @Override
@@ -130,33 +131,5 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 
     }
-    public String generatePassayPassword() {
-        PasswordGenerator gen = new PasswordGenerator();
-        CharacterData lowerCaseChars = EnglishCharacterData.LowerCase;
-        CharacterRule lowerCaseRule = new CharacterRule(lowerCaseChars);
-        lowerCaseRule.setNumberOfCharacters(2);
 
-        CharacterData upperCaseChars = EnglishCharacterData.UpperCase;
-        CharacterRule upperCaseRule = new CharacterRule(upperCaseChars);
-        upperCaseRule.setNumberOfCharacters(2);
-
-        CharacterData digitChars = EnglishCharacterData.Digit;
-        CharacterRule digitRule = new CharacterRule(digitChars);
-        digitRule.setNumberOfCharacters(2);
-
-        CharacterData specialChars = new CharacterData() {
-            public String getErrorCode() {
-                return ERROR_CODE;
-            }
-
-            public String getCharacters() {
-                return "!@#$%^&*()_+";
-            }
-        };
-        CharacterRule splCharRule = new CharacterRule(specialChars);
-        splCharRule.setNumberOfCharacters(2);
-
-        return gen.generatePassword(10, splCharRule, lowerCaseRule,
-                upperCaseRule, digitRule);
-    }
 }

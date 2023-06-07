@@ -29,16 +29,17 @@ spring:
      google:
        userInfoEndPoint: https://www.googleapis.com/oauth2/v3/userinfo
 server:
+  port: 8080
   error:
     include-binding-errors: always
     include-message: always
 
 
-logging:
-  level:
-    root: DEBUG
-  pattern:
-    console: "{\"timestamp\":\"%d{yyyy-MM-dd HH:mm:ss.SSS}\",\"level\":\"%level\",\"thread\":\"%t\",\"logger\":\"%logger{36}\",\"message\":\"%msg\"}%n"
+#logging:
+#  level:
+#    root: DEBUG
+#  pattern:
+#    console: "{\"timestamp\":\"%d{yyyy-MM-dd HH:mm:ss.SSS}\",\"level\":\"%level\",\"thread\":\"%t\",\"logger\":\"%logger{36}\",\"message\":\"%msg\"}%n"
 cloud:
   aws:
     credentials:

@@ -19,7 +19,7 @@ const baseQuery = fetchBaseQuery({
 })
 
 const refreshQuery = fetchBaseQuery({
-  baseUrl: 'http://localhost:8080/api/v1',
+  baseUrl: 'http://localhost:8000/api/v1',
   credentials: 'include',
   prepareHeaders: (headers, { getState }) => {
     const { refreshToken } = (getState() as RootState).auth

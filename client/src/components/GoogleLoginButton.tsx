@@ -7,6 +7,7 @@ import { useOauth2LoginMutation } from '../features/auth/authApiSlice'
 import { useAppDispatch } from '../app/hooks'
 import { setCredentials } from '../features/auth/authSlice'
 import { useNavigate } from 'react-router-dom'
+import { replace } from 'formik'
 
 const GoogleLoginButton = () => {
   const navigate = useNavigate()
@@ -21,7 +22,12 @@ const GoogleLoginButton = () => {
       .unwrap()
       .then((payload) => {
         dispatch(setCredentials(payload))
-        navigate('/')
+        console.log(payload.newUser)
+        if (payload && payload.newUser == true) {
+          navigate('/details', { replace: true })
+        } else {
+          navigate('/')
+        }
       })
       .catch((err) => console.log(err))
   }

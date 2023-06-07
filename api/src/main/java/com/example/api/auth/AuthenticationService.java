@@ -11,7 +11,7 @@ import java.io.IOException;
 public interface AuthenticationService {
     AuthenticationResponseDto register(RegisterRequestDto request,CredentialsType credentialsType) throws UserNameExistsException;
 
-    AuthenticationResponseDto authenticate(AuthenticationRequestDto request);
+    AuthenticationResponseDto authenticate(AuthenticationRequestDto request,CredentialsType credentialsType);
 
     void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException;
 }

@@ -1,17 +1,17 @@
 import { logOut } from './authSlice'
-import { IUser } from '../../interfaces'
+import { IAuthState, IUser } from '../../interfaces'
 import { apiSlice } from '../api/apiSlice'
 
 export const extendedAuthenticationSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    registerUser: builder.mutation({
+    registerUser: builder.mutation<IAuthState, Partial<IUser>>({
       query: (body: Partial<IUser>) => ({
         url: '/auth/register',
         method: 'POST',
         body
       })
     }),
-    loginUser: builder.mutation({
+    loginUser: builder.mutation<IAuthState, Partial<IUser>>({
       query: (body: Partial<IUser>) => ({
         url: '/auth/authenticate',
         method: 'POST',

@@ -1,6 +1,7 @@
 package com.example.api.auth;
 
 import com.example.api.user.UserNameExistsException;
+import com.example.api.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -18,6 +19,7 @@ import java.util.Objects;
 @RequestMapping("/api/v1/auth")
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
+
 private final Oauth2Service oauth2Service;
 
     @PostMapping("/register")
@@ -39,7 +41,7 @@ private final Oauth2Service oauth2Service;
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponseDto> authenticate(@RequestBody @Valid AuthenticationRequestDto request) {
-        return ResponseEntity.ok(authenticationService.authenticate(request));
+        return ResponseEntity.ok(authenticationService.authenticate(request,CredentialsType.EMAILPASS));
     }
 
     @GetMapping("/refresh")
