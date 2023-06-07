@@ -5,7 +5,7 @@ import { RootState } from '../../app/store'
 import { logOut, setCredentials } from '../auth/authSlice'
 import { IAuthState } from '../../interfaces/index'
 const baseQuery = fetchBaseQuery({
-  baseUrl: 'http://localhost:8080/api/v1',
+  baseUrl: 'http://13.48.203.248:8080/api/v1',
   credentials: 'include',
   prepareHeaders: (headers, { getState }) => {
     const { accessToken } = (getState() as RootState).auth
@@ -19,7 +19,7 @@ const baseQuery = fetchBaseQuery({
 })
 
 const refreshQuery = fetchBaseQuery({
-  baseUrl: 'http://localhost:8000/api/v1',
+  baseUrl: 'http://13.48.203.248:8000/api/v1',
   credentials: 'include',
   prepareHeaders: (headers, { getState }) => {
     const { refreshToken } = (getState() as RootState).auth

@@ -9,7 +9,6 @@ import { SelectChangeEvent } from '@mui/material'
 
 import { IPage, IProduct } from '../../interfaces'
 import useDebounce from '../../utils/hooks/useDebounce'
-import EnhancedSelect from '../../components/EnhancedSelect'
 import Wrapper from '../../components/wrapper/Wrapper'
 import Corousel from '../../components/Corousel'
 import Categories from '../categories/Categories'
