@@ -136,7 +136,7 @@ const SingleProductPage = () => {
         <CardMedia
           component="img"
           image={product?.imageUrl}
-          sx={{ borderRadius: 1, objectFit: 'contain', height: '52vh', m: 2 }}
+          sx={{ borderRadius: 2, objectFit: 'contain', height: '52vh', m: 2, overflow: 'hidden' }}
         />
         <Typography fontWeight="bold" color="secondary" variant="h5">
           {product?.name}

@@ -8,6 +8,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.passay.CharacterData;
+import org.passay.CharacterRule;
+import org.passay.EnglishCharacterData;
+import org.passay.PasswordGenerator;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,6 +20,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Optional;
+
+import static org.springframework.beans.MethodInvocationException.ERROR_CODE;
 
 @Service
 @RequiredArgsConstructor
@@ -35,18 +41,34 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      * @return token
      */
     @Override
-    public AuthenticationResponseDto register(RegisterRequestDto request) throws UserNameExistsException {
+    public AuthenticationResponseDto register(RegisterRequestDto request,CredentialsType credentialsType) throws UserNameExistsException {
         Optional<User> userDb = userRepository.findByEmailIgnoreCase(request.email());
-        if (userDb.isPresent()) {
+        if (userDb.isPresent() && credentialsType==CredentialsType.EMAILPASS) {
             throw new UserNameExistsException("Email already taken");
+        }else  if(userDb.isPresent() && credentialsType==CredentialsType.GOOGLE){
+            authenticate(new AuthenticationRequestDto(request.email(),userDb.get().getPassword()));
         }
-        User user = User.builder()
-                .email(request.email())
-                .name(request.name())
-                .password(passwordEncoder.encode(request.password()))
-                .role(Role.USER)
-                .isBanned(false)
-                .build();
+        User user;
+        if(credentialsType==CredentialsType.EMAILPASS){
+            user = User.builder()
+                    .email(request.email())
+                    .name(request.name())
+                    .password(passwordEncoder.encode(request.password()))
+                    .role(Role.USER)
+                    .isBanned(false)
+                    .build();
+        }
+        else {
+            String password =generatePassayPassword();
+            user = User.builder()
+                    .email(request.email())
+                    .name(request.name())
+                    .password(passwordEncoder.encode(password))
+                    .role(Role.USER)
+                    .isBanned(false)
+                    .build();
+        }
+
         User savedUser = userRepository.save(user);
         String jwtToken = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
@@ -107,5 +129,34 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
 
 
+    }
+    public String generatePassayPassword() {
+        PasswordGenerator gen = new PasswordGenerator();
+        CharacterData lowerCaseChars = EnglishCharacterData.LowerCase;
+        CharacterRule lowerCaseRule = new CharacterRule(lowerCaseChars);
+        lowerCaseRule.setNumberOfCharacters(2);
+
+        CharacterData upperCaseChars = EnglishCharacterData.UpperCase;
+        CharacterRule upperCaseRule = new CharacterRule(upperCaseChars);
+        upperCaseRule.setNumberOfCharacters(2);
+
+        CharacterData digitChars = EnglishCharacterData.Digit;
+        CharacterRule digitRule = new CharacterRule(digitChars);
+        digitRule.setNumberOfCharacters(2);
+
+        CharacterData specialChars = new CharacterData() {
+            public String getErrorCode() {
+                return ERROR_CODE;
+            }
+
+            public String getCharacters() {
+                return "!@#$%^&*()_+";
+            }
+        };
+        CharacterRule splCharRule = new CharacterRule(specialChars);
+        splCharRule.setNumberOfCharacters(2);
+
+        return gen.generatePassword(10, splCharRule, lowerCaseRule,
+                upperCaseRule, digitRule);
     }
 }

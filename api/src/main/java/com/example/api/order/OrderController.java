@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -37,6 +38,7 @@ public class OrderController {
     }
 
     @PutMapping("/{orderId}/order-items/{orderItem}")
+    @PreAuthorize("hasAuthority('management:create')")
     public ResponseEntity<String> updateOrder(@PathVariable("orderId") Long orderId,
                                               @PathVariable("orderItem") Long orderItem,
                                               @RequestBody @Valid OrderItemDto orderItemDto) {
@@ -44,6 +46,7 @@ public class OrderController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAuthority('management:create')")
     public ResponseEntity<Map<String, Object>> fetchOrders(
             @RequestParam(value = "pageNo", defaultValue
                     = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,

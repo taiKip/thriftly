@@ -26,12 +26,9 @@ spring:
       refresh-token:
         expiration: 604800000
     oauth2:
-      client:
-        registration:
-            google:
-              client-id: 179228844613-on61dl5qnq40b1l19mp7qp3cgi1fa22b.apps.googleusercontent.com
-              client-secret: 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
-server:
+     google:
+       client-id: 179228844613-eea7rq7f6psii5h799co0v5rlbgokpvq.apps.googleusercontent.com
+       userInfoEndPoint: https://www.googleapis.com/oauth2/v3/userinfo
   error:
     include-binding-errors: always
     include-message: always

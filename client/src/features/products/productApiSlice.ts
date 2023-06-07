@@ -5,7 +5,7 @@ import { IQuery } from '../../interfaces'
 export const extendedProductsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getProducts: builder.query<IPage<IProduct>, Partial<IQuery>>({
-      query: ({ categoryId = 1, pageNo, pageSize, sortDir = 'ASC', sortBy = 'name' }) =>
+      query: ({ categoryId = 0, pageNo = 0, pageSize = 5, sortDir = 'ASC', sortBy = 'name' }) =>
         `/products?categoryId=${categoryId}&pageSize=${pageSize}&pageNo=${pageNo}&sortDir=${sortDir}&sortBy=${sortBy}`,
       providesTags: ['Products']
     }),
@@ -40,6 +40,12 @@ export const extendedProductsApiSlice = apiSlice.injectEndpoints({
         body: { ...product }
       }),
       invalidatesTags: ['Products']
+    }),
+    searchProductByName: builder.query<IProduct[], string>({
+      query: (name: string) => ({
+        url: `products/search?name=${name}`,
+        method: 'GET'
+      })
     })
   })
 })
@@ -49,5 +55,7 @@ export const {
   useAddNewProductMutation,
   useDeleteProductMutation,
   useUpdateProductMutation,
-  useAddReviewMutation
+  useAddReviewMutation,
+  useSearchProductByNameQuery,
+  useLazySearchProductByNameQuery
 } = extendedProductsApiSlice

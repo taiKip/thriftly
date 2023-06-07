@@ -125,7 +125,8 @@ public class ProductController {
 
 
     @PostMapping("/{productId}/reviews")
-    public ResponseEntity<String> addReview(@PathVariable("productId") Long productId, @RequestBody @Valid ReviewDto reviewDto) throws ProductNotFoundException {
+    public ResponseEntity<String> addReview(@PathVariable("productId") Long productId, @RequestBody @Valid ReviewDto reviewDto)
+            throws ProductNotFoundException {
         return ResponseEntity.ok(reviewService.addReview(productId, reviewDto));
     }
 

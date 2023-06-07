@@ -94,12 +94,20 @@ const Header = () => {
         </Link>
 
         <Box sx={{ display: { xs: 'none', sm: 'block', flexGrow: 1 } }}>
-          {isLoggedIn &&
-            navItems.map((item) => (
-              <Link to={item} key={item}>
-                <Button color="inherit">{item}</Button>
+          {isAdmin && (
+            <>
+              <Link to={'users'}>
+                <Button color="inherit">users</Button>
               </Link>
-            ))}
+              <Link to={'categories'}>
+                <Button color="inherit">categories</Button>
+              </Link>
+
+              <Link to={'dashboard'}>
+                <Button color="inherit">dashboard</Button>
+              </Link>
+            </>
+          )}
         </Box>
         <Link to={'/blog'}>
           <Button color="inherit" endIcon={<RssFeedIcon color="secondary" />}>
@@ -107,7 +115,7 @@ const Header = () => {
           </Button>
         </Link>
         <Box gap={2} display={'flex'} marginX={2}>
-          {isLoggedIn && (
+          {(isManager || isAdmin) && (
             <IconButton
               size="medium"
               aria-label="show all 2 new notifications"

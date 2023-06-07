@@ -9,7 +9,7 @@ import java.io.IOException;
 
 @Service
 public interface AuthenticationService {
-    AuthenticationResponseDto register(RegisterRequestDto request) throws UserNameExistsException;
+    AuthenticationResponseDto register(RegisterRequestDto request,CredentialsType credentialsType) throws UserNameExistsException;
 
     AuthenticationResponseDto authenticate(AuthenticationRequestDto request);
 

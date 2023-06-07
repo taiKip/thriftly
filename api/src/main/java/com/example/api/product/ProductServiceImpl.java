@@ -104,10 +104,6 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Product> searchProductsByName(String query) {
 
-
-
-
-
         return productRepository.searchProductsByName(query);
     }
 
@@ -126,10 +122,8 @@ public class ProductServiceImpl implements ProductService {
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.Direction.valueOf(sortDir), sortBy);
 
-
-
         Page<Product> products;
-        if (categoryId == -1) {
+        if (categoryId == 0) {
             products = productRepository.findAll(pageable);
         } else {
             products = productRepository.findAllProductsByCategoryId(categoryId, pageable);

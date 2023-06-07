@@ -60,7 +60,7 @@ const ShoppingCartPage = ({ anchorEl, handleClose }: cartPropsType) => {
   return (
     <>
       <SmallScreenAppBar />
-      <Container sx={{ paddingTop: 10, overflowX: 'hidden' }}>
+      <Container sx={{ paddingTop: 10, overflowX: 'hidden', marginBottom: 8 }}>
         <Box padding={2}>
           <Typography variant="h4" color={'text.primary'} fontSize={'1.4em'} gap={2}>
             <span>Your Shopping Cart </span> <span>🛒</span>

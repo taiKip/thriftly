@@ -1,4 +1,7 @@
 package com.example.api.auth;
 
-public record OAuth2Dto(String authUser,String code,String prompt,String scope) {
+import lombok.Builder;
+
+@Builder
+public record OAuth2Dto(String access_token,String authuser,int expires_in,String scope,String token_type) {
 }
