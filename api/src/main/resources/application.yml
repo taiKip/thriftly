@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: jdbc:postgresql://mydatabase-instance.cc5nuqyketbc.eu-north-1.rds.amazonaws.com/thriftydb
+    username: postgres
+    password: postgres
     driver-class-name: org.postgresql.Driver
   servlet:
     multipart:
@@ -21,14 +21,14 @@ spring:
     password:
       regex-pattern: "^(?=.*\\d)(?=.*[a-z])(?=.*[!@#$%^&*])(?=.*[A-Z])(?=.*[a-zA-Z]).{6,}$"
     jwt:
-      secret-key: ${SECRET_KEY}
+      secret-key: 78214125432A462D4A614E645267556B58703273357638792F423F4528472B4B
       expiration: 3600000
       refresh-token:
         expiration: 604800000
     oauth2:
      google:
-       client-id: 179228844613-eea7rq7f6psii5h799co0v5rlbgokpvq.apps.googleusercontent.com
        userInfoEndPoint: https://www.googleapis.com/oauth2/v3/userinfo
+server:
   error:
     include-binding-errors: always
     include-message: always
@@ -42,10 +42,10 @@ logging:
 cloud:
   aws:
     credentials:
-      access-key: ${AWS_ACCESS_KEY}
-      secret-access-key:  ${AWS_SECRET_ACCESS_KEY}
+      access-key: AKIAQODPVBA42BHGZNHG
+      secret-access-key: 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
     region:
       static: eu-north-1
     stack: false
     s3:
-      bucket: ${AWS_BUCKET_NAME}
+      bucket: thriftly-bucket
